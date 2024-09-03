@@ -7,27 +7,48 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     <style>
       *{
-        background-color: azure;
+        /* background-color: azure; */
+      }
+      .logo{
+        margin: 0 auto;
+        padding-bottom: 40px;
+        width: 400px;
+      }
+      .wrap{
+        width :1280px;
+        margin: 0 auto;
+      }
+      .button_login, .acount_button{
+        margin: 0 auto;
+        width :800px;
+      }
+      .home_button{
+        margin: 0 auto;
+        width: 800px;
+      }
+      .login_button{
+        width: 800px;
+        margin: 5px;
       }
     </style>
   </head>
   <body>
+    <div class="wrap">
     <section class="section is-large">
-      <div>
+      <div class="logo">
         <img src = "/static/source/jungdob_logo.png" alt="Logo">
       </div>
-      <form method="post" action="" id="login-form">
-        <div class="field">
-          <p class="control has-icons-left has-icons-right">
-            <input class="input" type="email" placeholder="Email">
-            <span class="icon is-small is-left">
-              <i class="fas fa-envelope"></i>
-            </span>
-            <span class="icon is-small is-right">
-              <i class="fas fa-check"></i>
-            </span>
-          </p>
-        </div>
+      <div class="field">
+        <p class="control has-icons-left has-icons-right">
+          <input class="input" type="email" placeholder="Email">
+          <span class="icon is-small is-left">
+            <i class="fas fa-envelope"></i>
+          </span>
+          <span class="icon is-small is-right">
+            <i class="fas fa-check"></i>
+          </span>
+        </p>
+      </div>
       <div class="field">
         <p class="control has-icons-left">
           <input class="input" type="password" placeholder="Password">
@@ -37,12 +58,19 @@
         </p>
       </div>
       <div class="field">
+        <div class="home_button">
         <p class="control">
-          <button class="button is-success">
+          <button class="button is-success login_button">
             Login
           </button>
         </p>
+        <p class="control">
+          <button class="button is-primary is-outlined acount_button">
+            회원가입
+          </button>
+        </p>
+        </div>
       </div>
-      </section>
+    </section>
+  </div>
   </body>
-</html>

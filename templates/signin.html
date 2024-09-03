@@ -7,6 +7,7 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
     >
+    <script src = "../static/signin.js"></script>
 </head>
 <body>
     <div class = "content wrap">
@@ -63,17 +64,19 @@
             <label class="label">MBTI(추후 이벤트 참여에 도움이 됩니다)</label>
             <input class="input" type="text" placeholder="ENFP"/>
         </div>
-          
-          
-        
-          
+        <div class = "field">
+            <label class="label">프로필 사진</label>
+            <form class="inputImg" method="post" enctype="multipart/form-data">
+                <div class="addImage" id="image-show"></div>
+                <input type="file" accept="image/*" onchange="loadFile(this)">
+            </form>
+        </div>
+
           <div class="field is-grouped">
             <div class="control">
-              <button class="button is-link">Submit</button>
+              <button class="button is-primary">가입하기</button>
             </div>
-            <div class="control">
-              <button class="button is-link is-light">Cancel</button>
-            </div>
+
           </div>
     </div>
     

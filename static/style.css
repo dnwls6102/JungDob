@@ -11,3 +11,12 @@
 #Inline_flex {
     display : inline-flex;
 }
+
+.addImage {
+    width: 200px;
+    height: 250px;
+    background-color: lightgray;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 0px 10px 10px 0px;
+}

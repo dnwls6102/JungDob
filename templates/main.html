@@ -6,8 +6,12 @@
   <link rel="stylesheet" type="text/css" href="../static/style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
   <style>
+    /* *{
+      display: flex;
+    } */
     .wrap {
       width: 1280px;
+      height: 1280px;
       margin: 0 auto;
     }
 
@@ -44,14 +48,25 @@
     #text {
       font-size: large;
     }
-    .content{
-      margin-top: 0;
+    .sub_nav{
+      font-size: 30px;
     }
+
+    .create_answer{
+      margin: 0 auto;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 200px;
+      height: 100px;
+    }
+
+
   </style>
 </head>
 
 <body>
-
   <head>
     <meta charset="utf-8">
     <title>회원가입</title>
@@ -61,7 +76,7 @@
 
   <body>
     <div class="content wrap">
-      <div class="content wrap">
+      
         <img class="top_left_logo" src="/static/source/jungdob_logo.png" />
         <div>
           <input type='text' placeholder='주차를 입력해주세요' class='bottom-border' />
@@ -84,6 +99,7 @@
           </p>
         </div>
 
+        <a href="" class="sub_nav answer_stay"> 답변 진행중 /</a> <a class="sub_nav answer_success" href=""> 완료된 답변</a>
         <div class="card">
           <div class="card-content">
             <div class="media">
@@ -98,19 +114,26 @@
               </div>
             </div>
   
-            <div class="content">
+            <div class="content_">
               <h1>c언어 포인터 </h1>
-              
               
             </div>
             <div class="footer_btn">
-              <a>좋아요</a>
+              <a onclick="" class="button is-success login_button"">
+              댓글 &nbsp; <p>1</p>
+              </a>
+              <a onclick="" class="button is-success login_button"">
+                나도 궁금해요  &nbsp; <p>1</p>
+              </a>
+    
             </div>
           </div>
         </div>
 
       </div>
-
+      <a onclick="" class="button is-success create_answer">
+        질문하기 &nbsp; <p>1</p>
+      </a>
   </body>
 
   </html>

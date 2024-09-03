@@ -1,6 +1,10 @@
-from flask import Flask, render_template
+from pymongo import MongoClient
+from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
+db = client.jungdob
+
+
 
 @app.route('/')
 def index():

@@ -3,22 +3,46 @@
   <head>
     <meta charset="utf-8">
     <title>main_Login_page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <style>
+      *{
+        background-color: azure;
+      }
+    </style>
   </head>
   <body>
-    <body>
-      <div class="login-wrapper">
-          <div><img src="/source/jungdob_logo.png" alt="Logo"></div>
-          <form method="post" action="" id="login-form">
-              <input type="text" name="userName" placeholder="ID를 입력해주세요">
-              <input type="password" name="userPassword" placeholder="비밀번호를 입력해 주세요">
-              <label for="remember-check">
-                  <input type="checkbox" id="remember-check">아이디 저장하기
-              </label>
-              <input type="submit" value="Login">
-              <input type="submit" value="회원가입">
-          </form>
+    <section class="section is-large">
+      <div>
+        <img src = "/static/source/jungdob_logo.png" alt="Logo">
       </div>
-  </body>
-
+      <form method="post" action="" id="login-form">
+        <div class="field">
+          <p class="control has-icons-left has-icons-right">
+            <input class="input" type="email" placeholder="Email">
+            <span class="icon is-small is-left">
+              <i class="fas fa-envelope"></i>
+            </span>
+            <span class="icon is-small is-right">
+              <i class="fas fa-check"></i>
+            </span>
+          </p>
+        </div>
+      <div class="field">
+        <p class="control has-icons-left">
+          <input class="input" type="password" placeholder="Password">
+          <span class="icon is-small is-left">
+            <i class="fas fa-lock"></i>
+          </span>
+        </p>
+      </div>
+      <div class="field">
+        <p class="control">
+          <button class="button is-success">
+            Login
+          </button>
+        </p>
+      </div>
+      </section>
   </body>
 </html>

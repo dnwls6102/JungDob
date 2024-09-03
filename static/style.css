@@ -1,0 +1,13 @@
+.top_left_logo {
+    width : 300px;
+    height : 75px;
+}
+.content {
+    margin-top : 5%;
+    padding-left : 5%;
+    padding-right : 5%;
+}
+
+#ID {
+    display : inline-block;
+}

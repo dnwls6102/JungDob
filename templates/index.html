@@ -3,22 +3,77 @@
   <head>
     <meta charset="utf-8">
     <title>main_Login_page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <style>
+      *{
+        /* background-color: azure; */
+      }
+      .logo{
+        margin: 0 auto;
+        padding-bottom: 40px;
+        width: 400px;
+      }
+      .wrap{
+        width :1280px;
+        margin: 0 auto;
+      }
+      .button_login, .acount_button{
+        margin: 0 auto;
+        width :800px;
+      }
+      .home_button{
+        margin: 0 auto;
+        width: 800px;
+      }
+      .login_button{
+        width: 800px;
+        margin: 5px;
+      }
+      .input{
+        height : 60px;
+      }
+    </style>
   </head>
   <body>
-    <body>
-      <div class="login-wrapper">
-          <div><img src="/source/jungdob_logo.png" alt="Logo"></div>
-          <form method="post" action="" id="login-form">
-              <input type="text" name="userName" placeholder="ID를 입력해주세요">
-              <input type="password" name="userPassword" placeholder="비밀번호를 입력해 주세요">
-              <label for="remember-check">
-                  <input type="checkbox" id="remember-check">아이디 저장하기
-              </label>
-              <input type="submit" value="Login">
-              <input type="submit" value="회원가입">
-          </form>
+    <div class="wrap">
+    <section class="section is-large">
+      <div class="logo">
+        <img src = "/static/source/jungdob_logo.png" alt="Logo">
       </div>
+      <div class="field">
+        <p class="control has-icons-left has-icons-right">
+          <input class="input" type="email" placeholder="아이디를 입력해주세요">
+          <span class="icon is-small is-left">
+            <i class="fas fa-envelope"></i>
+          </span>
+          <span class="icon is-small is-right">
+            <i class="fas fa-check"></i>
+          </span>
+        </p>
+      </div>
+      <div class="field">
+        <p class="control has-icons-left">
+          <input class="input" type="password" placeholder="패스워드를 입력해주세요">
+          <span class="icon is-small is-left">
+            <i class="fas fa-lock"></i>
+          </span>
+        </p>
+      </div>
+      <div class="field">
+        <div class="home_button">
+        <p class="control">
+          <a class="button is-success login_button">
+            Login
+          </a>
+        </p>
+        <p class="control">
+          <a href="" onclick="/templates/" class="button is-primary is-outlined acount_button">
+            회원가입
+          </a>
+        </p>
+        </div>
+      </div>
+    </section>
+  </div>
   </body>
-
-  </body>
-</html>

@@ -22,6 +22,10 @@ def signin():
 def writeQ():
     return render_template("writeQ.html")
 
+@app.route('/post')
+def post():
+    return render_template("post.html")
+
 # API
 def getNextSequence(collection):
     temp = db.counter.find_one_and_update({'_id':collection}, 

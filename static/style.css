@@ -11,6 +11,17 @@
 #Inline_flex {
     display : inline-flex;
 }
+#Inline_block {
+    width: 100%;
+    display : inline-block;
+}
+#Inline_block > div {
+    float: right;
+    vertical-align : bottom;
+}
+#float_right {
+    float : right;
+}
 
 .addImage {
     width: 200px;

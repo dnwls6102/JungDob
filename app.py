@@ -1,5 +1,6 @@
 from pymongo import MongoClient, ReturnDocument
 from flask import Flask, render_template, jsonify, request
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -86,6 +87,11 @@ def getPostList():
 def createPost():
     post = request.get_json()
     post["id"] = getNextSequence("post")
+    post['like_num'] = 0
+    post['like_user_id_list'] = []
+    post['solved_comment_id'] = -1
+    post['comment_id_list'] = []
+    post['time'] = datetime.now()
     db.post.insert_one(post)
     return jsonify({'result': 'success'})
 
@@ -126,6 +132,9 @@ def createComment():
     post_id = comment['post_id']
     comment.pop('post_id')
     comment["id"] = getNextSequence("comment")
+    comment['like_user_id_list'] = []
+    comment['hate_user_id_list'] = []
+    comment['time'] = datetime.now()
     db.comment.insert_one(comment)
 
     post = db.post.find_one({"id":post_id})
@@ -149,6 +158,49 @@ def deleteComment():
         db.post.delete_one({"id":post_id})
         db.post.insert_one(post)
         return jsonify({'result': 'success'})
+    
+@app.route('/api/pressPostLike', methods=['POST'])
+def pressPostLike():
+    post_id = request.form['post_id']
+    account_id = request.form['account_id']
+    post = db.post.find_one({"id":post_id})
+    if account_id not in post['like_user_id_list']:
+        post['like_user_id_list'].append(account_id)
+        post['like_num'] += 1
+    else:
+        post['like_user_id_list'].remove(account_id)
+        post['like_num'] -= 1
+    db.post.delete_one({"id":post_id})
+    db.post.insert_one(post)
+    return jsonify({'result': 'success'})
+
+@app.route('/api/pressCommentLike', methods=['POST'])
+def pressCommentLike():
+    comment_id = request.form['comment_id']
+    account_id = request.form['account_id']
+    comment = db.comment.find_one({"id":comment_id})
+    if account_id not in comment['like_user_id_list'] and account_id not in comment['hate_user_id_list']:
+        comment['like_user_id_list'].append(account_id)
+    elif account_id in comment['like_user_id_list'] and account_id not in comment['hate_user_id_list']:
+        comment['like_user_id_list'].remove(account_id)
+    elif account_id not in comment['like_user_id_list'] and account_id in comment['hate_user_id_list']:
+        comment['like_user_id_list'].append(account_id)
+        comment['hate_user_id_list'].remove(account_id)
+    return jsonify({'result': 'success'})
+
+@app.route('/api/pressCommentHate', methods=['POST'])
+def pressCommentHate():
+    comment_id = request.form['comment_id']
+    account_id = request.form['account_id']
+    comment = db.comment.find_one({"id":comment_id})
+    if account_id not in comment['like_user_id_list'] and account_id not in comment['hate_user_id_list']:
+        comment['hate_user_id_list'].append(account_id)
+    elif account_id in comment['like_user_id_list'] and account_id not in comment['hate_user_id_list']:
+        comment['hate_user_id_list'].remove(account_id)
+    elif account_id not in comment['like_user_id_list'] and account_id in comment['hate_user_id_list']:
+        comment['hate_user_id_list'].append(account_id)
+        comment['like_user_id_list'].remove(account_id)
+    return jsonify({'result': 'success'})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5050, debug=True)

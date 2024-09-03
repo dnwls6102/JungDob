@@ -22,6 +22,10 @@ def signin():
 def writeQ():
     return render_template("writeQ.html")
 
+@app.route('/post')
+def post():
+    return render_template("post.html")
+
 # API
 def getNextSequence(collection):
     temp = db.counter.find_one_and_update({'_id':collection}, 
@@ -95,20 +99,57 @@ def getCurrentPost():
 
 @app.route('/api/getCommentList', methods=['GET'])
 def getCommentList():
-    
-    return jsonify({'result': 'success'})
+    post_id = request.form['post_id']
+    post = db.post.find_one({"id":post_id})
+    comment_id_list = post['like_user_id_list']
+    comment_list = []
+    for id in comment_id_list:
+        comment_list.append(db.post.find_one({'id':id}))
+    return jsonify({'result': 'success'}, {'comments':comment_list})
 
 @app.route('/api/deletePost', methods=['DELETE'])
 def deletePost():
-    return jsonify({'result': 'success'})
+    post_id = request.form['post_id']
+    user_id = request.form['user_id']
+    post = db.post.find_one({"id":post_id})
+    if post['author_id'] != user_id:
+        return jsonify({'result': 'false'})
+    else:
+        comment_id_list = post['like_user_id_list']
+        for id in comment_id_list:
+            db.comment.delete_one({'id': id})
+        db.post.delete_one({"id":post_id})
+        return jsonify({'result': 'success'})
 
 @app.route('/api/createComment', methods=['POST'])
 def createComment():
+    comment = request.get_json()
+    post_id = comment['post_id']
+    comment.pop('post_id')
+    comment["id"] = getNextSequence("comment")
+    db.comment.insert_one(comment)
+
+    post = db.post.find_one({"id":post_id})
+    post['comment_id_list'].append(comment["id"])
+    db.post.delete_one({"id":post_id})
+    db.post.insert_one(post)
     return jsonify({'result': 'success'})
 
 @app.route('/api/deleteComment', methods=['DELETE'])
 def deleteComment():
-    return jsonify({'result': 'success'})
+    user_id = request.form['user_id']
+    comment_id = request.form['comment_id']
+    comment = db.comment.find_one({"id":comment_id})
+    if comment['author_id'] != user_id:
+        return jsonify({'result': 'false'})
+    else:
+        db.comment.delete_one({'id': comment_id})
+        post_id = comment['post_id']
+        post = db.post.find_one({"id":post_id})
+        post['comment_id_list'].remove(comment_id)
+        db.post.delete_one({"id":post_id})
+        db.post.insert_one(post)
+        return jsonify({'result': 'success'})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5050, debug=True)

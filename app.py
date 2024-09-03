@@ -28,7 +28,7 @@ def getNextSequence(collection):
         {'$inc': {"seq":1}}, return_document=ReturnDocument.AFTER)
     return temp["seq"]
 
-@app.route('/api/getUserInfo', method=['GET'])
+@app.route('/api/getUserInfo', methods=['GET'])
 def getUserInfo():
     user_id = request.form['user_id']
     user = db.user.find_one({'id':user_id},{
@@ -44,19 +44,19 @@ def getUserInfo():
     return jsonify({'result': 'success'}, user)
 
 
-@app.route('/api/signIn', method=['GET'])
+@app.route('/api/signIn', methods=['GET'])
 def signIn():
     return jsonify({'result': 'success'})
 
 
-@app.route('/api/signUp', method=['POST'])
+@app.route('/api/signUp', methods=['POST'])
 def signUp():
     user = request.get_json()
     user["id"] = getNextSequence("user")
     db.user.insert_one(user)
     return jsonify({'result': 'success'})
 
-@app.route('/api/checkIDUsed', method=['GET'])
+@app.route('/api/checkIDUsed', methods=['GET'])
 def checkIDUsed():
     temp_id = request.form['account_id']
     temp_cursor = db.user.find_one({'account_id':temp_id})
@@ -67,7 +67,7 @@ def checkIDUsed():
         ret = False
     return jsonify({'result': 'success'}, {'isUsed': ret})
 
-@app.route('/api/getPostList', method=['GET'])
+@app.route('/api/getPostList', methods=['GET'])
 def getPostList():
     user_id = request.form['user_id']
     week = request.form['week']
@@ -79,7 +79,7 @@ def getPostList():
     return jsonify({'result': 'success'}, {'list': ret})
 
 
-@app.route('/api/createPost', method=['POST'])
+@app.route('/api/createPost', methods=['POST'])
 def createPost():
     post = request.get_json()
     post["id"] = getNextSequence("post")
@@ -87,23 +87,26 @@ def createPost():
     return jsonify({'result': 'success'})
 
 
-@app.route('/api/getCurrentPost', method=['GET'])
+@app.route('/api/getCurrentPost', methods=['GET'])
 def getCurrentPost():
-    return jsonify({'result': 'success'})
+    post_id = request.form['post_id']
+    post = db.post.find_one({"id":post_id})
+    return jsonify({'result': 'success'}, post)
 
-@app.route('/api/getCommentList', method=['GET'])
+@app.route('/api/getCommentList', methods=['GET'])
 def getCommentList():
+    
     return jsonify({'result': 'success'})
 
-@app.route('/api/deletePost', method=['DELETE'])
+@app.route('/api/deletePost', methods=['DELETE'])
 def deletePost():
     return jsonify({'result': 'success'})
 
-@app.route('/api/createComment', method=['POST'])
+@app.route('/api/createComment', methods=['POST'])
 def createComment():
     return jsonify({'result': 'success'})
 
-@app.route('/api/deleteComment', method=['DELETE'])
+@app.route('/api/deleteComment', methods=['DELETE'])
 def deleteComment():
     return jsonify({'result': 'success'})
 

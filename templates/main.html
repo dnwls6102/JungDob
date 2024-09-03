@@ -6,9 +6,10 @@
   <link rel="stylesheet" type="text/css" href="../static/style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
   <style>
-    /* *{
-      display: flex;
-    } */
+    a {
+      text-decoration: none;
+    }
+
     .wrap {
       width: 1280px;
       height: 1280px;
@@ -32,8 +33,10 @@
 
     .bottom-border {
       border-width: 0 0 1px;
+      width: auto;
       font-size: 20px;
     }
+
 
     .week_searching {
       display: inline-block;
@@ -48,25 +51,34 @@
     #text {
       font-size: large;
     }
-    .sub_nav{
-      font-size: 30px;
+
+    .sub_nav {
+      font-size: 20px;
+      /* text-decoration: none */
+      color: #5bcd9a;
     }
 
-    .create_answer{
-      margin: 0 auto;
+    .create_answer {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      width: 200px;
-      height: 100px;
+      bottom: 40px;
+      right: 40px;
+      border: none;
+      border-radius: 16px;
+      padding: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #5bcd9a;
+      text-align: center;
+      color: black;
     }
-
-
+    .login_button{
+      margin-top: 5px;
+    }
   </style>
 </head>
 
 <body>
+
   <head>
     <meta charset="utf-8">
     <title>회원가입</title>
@@ -76,64 +88,67 @@
 
   <body>
     <div class="content wrap">
-      
-        <img class="top_left_logo" src="/static/source/jungdob_logo.png" />
-        <div>
-          <input type='text' placeholder='주차를 입력해주세요' class='bottom-border' />
-          <p class="week_searching">주차 프로젝트</p>
-          <a onclick="" class="button is-success login_button"">
+
+      <img class="top_left_logo" src="/static/source/jungdob_logo.png" />
+      <div>
+        <input type='text' placeholder='주차를 입력하세요' class='bottom-border'/>
+        <p class="week_searching">주차 프로젝트</p>
+        <a onclick="" class="button is-success login_button">
             검색
           </a>
           <div class="field week_searching filter">
-            <label class="label"></label>
-            <div class="control">
-              <div class="select">
-                <select>
-                  <option>추천순</option>
-                  <option>좋아요 순</option>
-                  <option>댓글순</option>
-                </select>
-              </div>
+          <label class="label"></label>
+          <div class="control">
+            <div class="select">
+              <select>
+                <option>추천순</option>
+                <option>좋아요 순</option>
+                <option>댓글순</option>
+              </select>
             </div>
           </div>
-          </p>
+      </div>
+      </p>
+    </div>
+
+    <a class="sub_nav answer_stay" href=""> 답변 진행중 /</a>
+    <a class="sub_nav answer_success" href=""> 완료된 답변</a>
+    <div class="card">
+      <div class="card-content">
+        <div class="media">
+          <div class="media-left">
+            <figure class="image is-48x48">
+              <img src="" alt="Placeholder image" />
+            </figure>
+          </div>
+          <div class="media-content">
+            <p class="title is-4"><a>John Smith</a></p>
+            <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+          </div>
         </div>
 
-        <a href="" class="sub_nav answer_stay"> 답변 진행중 /</a> <a class="sub_nav answer_success" href=""> 완료된 답변</a>
-        <div class="card">
-          <div class="card-content">
-            <div class="media">
-              <div class="media-left">
-                <figure class="image is-48x48">
-                  <img src="" alt="Placeholder image" />
-                </figure>
-              </div>
-              <div class="media-content">
-                <p class="title is-4"><a>John Smith</a></p>
-                <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-              </div>
-            </div>
-  
-            <div class="content_">
-              <h1>c언어 포인터 </h1>
-              
-            </div>
-            <div class="footer_btn">
-              <a onclick="" class="button is-success login_button"">
+        <div class="content_">
+          <h1>
+            <p>c언어 포인터</p>
+          </h1>
+
+        </div>
+        <div class="footer_btn">
+          <a onclick="" class="button is-success login_button"">
               댓글 &nbsp; <p>1</p>
               </a>
-              <a onclick="" class="button is-success login_button"">
-                나도 궁금해요  &nbsp; <p>1</p>
-              </a>
-    
-            </div>
-          </div>
-        </div>
+              <a onclick="" class=" button is-success login_button"">
+            나도 궁금해요 &nbsp; <p>1</p>
+          </a>
 
+        </div>
       </div>
-      <a onclick="" class="button is-success create_answer">
-        질문하기 &nbsp; <p>1</p>
-      </a>
+    </div>
+
+    </div>
+    <a onclick="" class="is-success create_answer">
+      질문하기
+    </a>
   </body>
 
   </html>

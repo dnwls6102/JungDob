@@ -10,10 +10,6 @@ db = client.jungdob
 def index():
     return render_template("index.html")
 
-@app.route('/login')
-def login():
-    return render_template("login.html")
-
 @app.route('/signin')
 def signin():
     return render_template("signin.html")
@@ -25,6 +21,10 @@ def writeQ():
 @app.route('/post')
 def post():
     return render_template("post.html")
+
+@app.route('/main')
+def main():
+    return render_template("main.html")
 
 # API
 def getNextSequence(collection):
@@ -51,7 +51,6 @@ def getUserInfo():
 @app.route('/api/signIn', methods=['GET'])
 def signIn():
     return jsonify({'result': 'success'})
-
 
 @app.route('/api/signUp', methods=['POST'])
 def signUp():

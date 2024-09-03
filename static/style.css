@@ -60,6 +60,16 @@
     margin-bottom : 30px;
 }
 
+.answers {
+    margin-top : 100px;
+}
+
+.reply-user-name {
+    margin-right : 10px;
+    font-size : 22px;
+    font-weight : bold;
+}
+
 .addImage {
     width: 200px;
     height: 250px;

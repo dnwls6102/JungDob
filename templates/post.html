@@ -23,12 +23,15 @@
     </div>
 
       <div class="post_title" id="Inline_block">
-        <span>찬바람 불 때 내게 와줄래 세상이 모질게</span>
+        <span>{{post['title']}}</span>
         <!-- javascript 혹은 jquery로 display속성을 block으로 변경하기 -->
         <!-- 해결 / 미해결 버튼의 id값은 게시글 고유의 id 값으로 설정하기 -->
         <div class="solved">
-          <button class="button is-success is-active">해결</button>
-          <button class="button is-active">미해결</button>
+          {%if post['solved_comment_id'] == -1 %}
+            <button class="button is-active">미해결</button>
+          {%else%}
+            <button class="button is-success is-active">해결</button>
+          {%endif%}
         </div>
       </div>
 
@@ -46,8 +49,8 @@
           </div>
           <div class="media-content">
             <!-- 아이디 및 이름 받아오기 : DB에서 아이디와 이름 각각 받아와서 변수로 올리기 -->
-            <p class="title is-4">MC몽 (신동현)</p>
-            <p class="subtitle is-6">작성 시간</p>
+            <p class="title is-4">{{authorInfo['user_name']}} ({{authorInfo['slack_id']}})</p>
+            <p class="subtitle is-6">{{post['time']}}</p>
           </div>
         </div>
       </div>
@@ -55,30 +58,18 @@
       <!-- db에서 글 가져오기 ==> 줄바꿈은 어떻게? <br>태그 -->
       <div class="post_content">
         <p>
-          グッバイ 굿바이 굿바이 君の運命のヒトは僕じゃない 키미노 운메이노
-          히토와 보쿠쟈 나이 너의 운명의 사람은 내가 아니야 辛いけど否めない
-          でも離れ難いのさ 츠라이케도 이나메나이 데모 하나레가타이노사 괴롭지만
-          부정할 수 없어, 하지만 멀어지긴 어려워 その髪に触れただけで 痛いや
-          いやでも 甘いな いやいや 소노 카미니 후레타 다케데 이타이야 이야데모
-          아마이나 이야이야 그 머리카락에 닿는 것만으로도 아파, 아니 그래도
-          달콤하네, 아니 아니 グッバイ 굿바이 굿바이 それじゃ僕にとって君は何？
-          소레쟈 보쿠니 톳테 키미와 나니? 그러면 나에게 있어 너는 뭐야?
-          答えは分からない 分かりたくもないのさ 코타에와 와카라나이 와카리타쿠모
-          나이노사 답은 모르겠어, 알고 싶지도 않아
-          たったひとつ確かなことがあるとするのならば 탓타 히토츠 타시카나 코토가
-          아루토 스루노나라바 그저 한 가지 확실한 것이 있다고 한다면
-          「君は綺麗だ」 "키미와 키레이다" "너는 아름다워"
+          {{post['content']}}
         </p>
       </div>
 
       <!-- 궁금해요 한 사람들 숫자 받아오기 : db에서 숫자 꺼내와서 변수로 대입 -->
       <div class="curious_button">
-        <button class="button is-success">나도 궁금해요 2</button>
+        <button class="button is-success">나도 궁금해요 {{post['like_num']}}</button>
       </div>
 
       <div class="answer_area">
         <!-- 댓글 단 사람들 숫자 받아오기 : db에서 숫자 꺼내와서 변수로 대입 -->
-        <h2>2개의 댓글</h2>
+        <h2>{{reply_num}}개의 댓글</h2>
         <div class="control">
           <textarea
             class="textarea has-fixed-size"
@@ -91,6 +82,7 @@
         <button class="button is-success">답변하기</button>
       </div>
       
+      {% for i in reply_db %}
       <!-- 댓글 블록 -->
       <div class="user_info" id="Inline_block">
         <!-- 사용자 이미지 -->
@@ -107,21 +99,18 @@
           <div class="media-content">
             <!-- 아이디 및 이름 받아오기 : DB에서 아이디와 이름 각각 받아와서 변수로 올리기 -->
              <!-- 작성시간 받아오기 : DB에서~ -->
-            <span class="reply-user-name">스티븐유 (유승준)</span>
-            <span>작성 시간</span>
+             {%for x in reply_users_db if not (i['author_id'] != x['id'])%}
+            <span class="reply-user-name">{{x['user_name']}} ({{x['slack_id']}})</span>
+            {%endfor%}
+            <span>{{i['time']}}</span>
+            
           </div>
         </div>
       </div>
       <div class = "reply-content">
         <!-- 댓글 작성 시 엔터 누르면 <br>태그가 활성화되게끔 해야될듯 -->
         <p>
-          내손을 잡아봐 언제든 함께할테니
-          <br>
-          나없이 혼자서 그어떤 의미조차 될순없어
-          <br>
-          뭐라도 말좀해 왜자꾸 울고만있어
-          <br>
-          한번만 안아줘 내꿈속에서 깰 수 없어
+          {{i['content']}}
         </p>
       </div>
       <!-- 추비추 버튼 -->
@@ -133,52 +122,8 @@
           <button class="button is-link is-light">안돼요 2</button>
         </p>
       </div>
-      
-      <!-- 댓글 블록 -->
-      <div class="user_info" id="Inline_block">
-        <!-- 사용자 이미지 -->
-        <div class="media">
-          <div class="media-left">
-            <figure class="image is-32x32">
-              <img
-                class="is-rounded"
-                src="https://bulma.io/assets/images/placeholders/96x96.png"
-                alt="Placeholder image"
-              />
-            </figure>
-          </div>
-          <div class="media-content">
-            <!-- 아이디 및 이름 받아오기 : DB에서 아이디와 이름 각각 받아와서 변수로 올리기 -->
-             <!-- 작성시간 받아오기 : DB에서~ -->
-            <span class="reply-user-name">스티븐유 (유승준)</span>
-            <span>작성 시간</span>
-          </div>
-        </div>
-      </div>
-      <div class = "reply-content">
-        <!-- 댓글 작성 시 엔터 누르면 <br>태그가 활성화되게끔 해야될듯 -->
-        <p>
-          내손을 잡아봐 언제든 함께할테니
-          <br>
-          나없이 혼자서 그어떤 의미조차 될순없어
-          <br>
-          뭐라도 말좀해 왜자꾸 울고만있어
-          <br>
-          한번만 안아줘 내꿈속에서 깰 수 없어
-        </p>
-      </div>
-      <!-- 추비추 버튼 -->
-      <div class="field is-grouped reply-osusume reply-block">
-        <p class="control">
-          <button class="button is-primary">이거다! 4</button>
-        </p>
-        <p class="control">
-          <button class="button is-link is-light">안돼요 2</button>
-        </p>
-      </div>
-    </div>
-
-    
+      {%endfor%}
+   
       
           
 

@@ -15,12 +15,14 @@
     width: 100%;
     display : inline-block;
 }
-#Inline_block > div {
-    float: right;
-    vertical-align : bottom;
-}
+
 #float_right {
     float : right;
+}
+
+.logout{
+    float: right;
+    vertical-align : bottom;
 }
 
 .post_title {
@@ -30,6 +32,65 @@
 .post_title > span {
     font-size : 50px;
     font-weight : bold;
+}
+
+.solved {
+    width : 160px;
+    float : right;
+    padding-top : 20px;
+}
+
+.user_info {
+    padding-top : 50px;
+}
+
+.user_image {
+    width : 32px;
+    height : 32px;
+}
+
+.user_info > div > span {
+    font-size : 25px;
+    font-weight : bold;
+}
+
+.post_content > p {
+    margin-top : 50px;
+    font-size : 20px;
+}
+
+.curious_button {
+    margin-top : 50px;
+}
+
+.answer_area {
+    margin-top : 50px;
+    margin-bottom : 30px;
+}
+
+.answers {
+    margin-top : 100px;
+}
+
+.reply-user-name {
+    margin-right : 10px;
+    font-size : 22px;
+    font-weight : bold;
+}
+
+.reply-content {
+    margin-top : 10px;
+    font-size : 18px;
+}
+
+.reply-osusume {
+    margin-top : 20px;
+}
+
+.reply-block {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding-bottom: 30px;
 }
 
 .addImage {

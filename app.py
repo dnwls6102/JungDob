@@ -42,7 +42,15 @@ def post():
     reply_users_db = []
     for i in post['comment_id_list']:
         for x in list(db.comment.find({})):
+            like_num = 0
+            hate_num = 0
             if x['id'] == i :
+                for t in x['like_user_id_list']:
+                    like_num += 1
+                for h in x['hate_user_id_list']:
+                    hate_num += 1
+                x['like_num'] = like_num
+                x['hate_num'] = hate_num
                 reply_db.append(x)
         for u in userdb :
             if u['id'] == i :
@@ -51,6 +59,7 @@ def post():
     print(reply_users_db)
     for i in post['comment_id_list']:
         temp_reply_num += 1
+    
     return render_template("post.html", post = post, authorInfo = authorInfo, reply_num = temp_reply_num,
                            reply_db = reply_db, reply_users_db = reply_users_db)
 

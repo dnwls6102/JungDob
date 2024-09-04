@@ -33,13 +33,14 @@ def writeQ():
 
 @app.route('/post', methods=['GET'])
 def post():
+    id_receive = request.args.get('id')
+    print(id_receive)
     return render_template("post.html")
 
 @app.route('/main')
 def main():
     ret = sorted(list(db.post.find({})), key=itemgetter('time'), reverse=True)
     users = list(db.user.find({}))
-    print(users)
     for _post in ret:
         _post.pop('_id')
     for x in ret:
@@ -48,8 +49,6 @@ def main():
         for z in x['comment_id_list'] :
             temp_reply_num += 1
         x['reply_num'] = temp_reply_num
-    print(ret)
-    print(users)
     return render_template("main.html", posts = ret, users = users, name = 'Null')
 
 

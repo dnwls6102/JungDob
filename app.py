@@ -14,14 +14,19 @@ db = client.jungdob
 
 jwt = JWTManager(app)
 
+#@app.route('/')
+#@jwt_required(optional=True)
+#def index():
+#    cur_user = get_jwt_identity()
+#    print(cur_user)
+#    if not cur_user:
+#        return render_template("index.html")
+#    else:
+#        return render_template("main.html")
+
 @app.route('/')
-@jwt_required(optional=True)
 def index():
-    cur_user = get_jwt_identity()
-    if not cur_user:
-        return render_template("main.html")
-    else:
-        return render_template("index.html")
+    return render_template("index.html")
 
 @app.route('/signin')
 def signin():
@@ -46,20 +51,12 @@ def getNextSequence(collection):
         {'$inc': {"seq":1}}, return_document=ReturnDocument.AFTER)
     return temp["seq"]
 
-@app.route('/api/getUserInfo', methods=['GET'])
+@app.route('/api/getUserInfo', methods=['POST'])
 def getUserInfo():
     user_id = request.form['user_id']
-    user = db.user.find_one({'id':user_id},{
-        'id':False,
-        'account_id':True,
-        'account_pw':False,
-        'user_name':True,
-        'MBTI':False,
-        'jungle_class':False,
-        'picture':True,
-        'slack_id':True
-    })
-    return jsonify({'result': 'success'}, user)
+    user = db.user.find_one({'id':int(user_id)})
+    user.pop("_id")
+    return jsonify({'result': 'success', "user":user})
 
 @app.route('/api/getUserimage', methods=['GET'])
 def getUserimage():
@@ -132,18 +129,37 @@ def checkIDUsed():
 
 @app.route('/api/getPostList', methods=['POST']) #
 def getPostList():
-    week = request.form['week']
+    week = int(request.form['week'])
+    sorting_method = request.form['sorting_method']
     print(week)
-    sorting_method = request.get_json()['sorting_method']
+    print(db.post.find_one({"week": week}))
     if sorting_method == "time":
-        #ret = list(db.post.find({"week": week}))
         ret = sorted(list(db.post.find({"week": week})), key=itemgetter('time'), reverse=True)
     elif sorting_method == "like":
         ret = sorted(list(db.post.find({"week": week})), key=itemgetter('like_num'), reverse=True)
     for _post in ret:
         _post.pop('_id')
-    print(ret)
     return jsonify({'result': 'success', 'post': ret})
+
+@app.route('/api/getCompletePostList', methods=['POST']) #
+def getCompletePostList():
+    week = int(request.form['week'])
+    sorting_method = request.form['sorting_method']
+    print(week)
+    print(db.post.find_one({"week": week}))
+    if sorting_method == "time":
+        ret = sorted(list(db.post.find({"week": week})), key=itemgetter('time'), reverse=True)
+    elif sorting_method == "like":
+        ret = sorted(list(db.post.find({"week": week})), key=itemgetter('like_num'), reverse=True)
+    in_progress = []
+    complete = []
+    for _post in ret:
+        _post.pop('_id')
+        if int(_post["solved_comment_id"]) == -1:
+            in_progress.append(_post)
+        else:
+            complete.append(_post)
+    return jsonify({'result': 'success', 'in_progress': in_progress, 'complete':complete})
 
 # my page post list
 #user_id = request.form['user_id']
@@ -157,6 +173,7 @@ def getPostList():
 
 
 @app.route('/api/createPost', methods=['POST']) #
+@jwt_required()
 def createPost():
     print("눌러짐")
     #줄바꿈 문자를 <br>로 바꾸기
@@ -175,10 +192,10 @@ def createPost():
     if request.form['content'] == '':
         print("내용없음")
         return jsonify({'result' : 'noContent'})
-    #유저 id값은 임시로 쓰레기값 부여
+
     post['title'] = request.form['title']
     post['content'] = request.form['content']
-    post["author_id"] = 1
+    post["author_id"] = get_jwt_identity()
     post["id"] = getNextSequence("post")
     post['like_num'] = 0
     post['like_user_id_list'] = []

@@ -80,31 +80,146 @@
       margin-top: 5px;
     }
   </style>
+
   <script>
-    let week = 99;
-    function get_post_list() {
+    const currentWeek = 0;
+    const post_card = `
+<div class="card-content">
+    <div class="media">
+        <div class="media-left">
+            <figure class="image is-48x48">
+                <img
+                    class="is-rounded"
+                    src="https://bulma.io/assets/images/placeholders/96x96.png"
+                    alt="Placeholder image"
+                />
+            </figure>
+        </div>
+        <div class="media-content">
+            <p class="title is-4"><a>%s</a></p>
+            <time datetime="2016-1-1">%s</time>
+        </div>
+    </div>
+
+    <div class="content_" onclick = "location.href = '/post'" style = "cursor:pointer;">
+        <h1>
+            <p>%s</p>
+        </h1>
+    </div>
+    <div class="footer_btn">
+        <a onclick="" class="button is-link is-light login_button"">
+            댓글 &nbsp; <p>%d</p>
+        </a>
+        <a onclick="" class=" button is-success login_button"">
+            나도 궁금해요 &nbsp; <p>%d</p>
+        </a>
+    </div>
+</div>
+`
+    function get_post_list(week) {
       let sorting_method = $('#sorting option:selected').val();
-      if (sorting_method == '추천순') {
-        sorting_method = 'like'
-      }
-      else {
-        sorting_method = 'time'
-      }
+      if (sorting_method == "추천순")
+        sorting_method = 'like';
+      else
+        sorting_method = 'time';
       
+      let ret = []
       $.ajax({
         type: "POST",
         url: "/api/getPostList",
-        data: {week : week, sorting_method : sorting_method},
+        data: {"week":week, "sorting_method" : sorting_method},
+        async:false,
         success: function(response) {
           if(response["result"] == "success") {
-            
+            ret = Object.assign([], response["post"]);
           }
           else {
             alert("서버 오류로 글 목록을 불러오지 못했습니다")
           }
         }
       })
+      return ret;
     }
+    function get_user_info(user_id) {
+      let ret = {};
+      $.ajax({
+        type: "POST",
+        url: "/api/getUserInfo",
+        data: {"user_id":user_id},
+        async:false,
+        success: function(response) {
+          if(response["result"] == "success") {
+            ret = response["user"];
+          }
+          else {
+            alert("error")
+          }
+        }
+      })
+      return ret;
+    }
+    function show_post_list(postList) {
+      let post_string = "";
+      postList.forEach(function(post) {
+        let user = get_user_info(post["author_id"]);
+        let name = user["account_id"] + "(" + user["user_name"] + ")";
+        let temp = post["time"].split(" ");
+        let time = "%s년 %s월 %s일 %s시 %s분"
+        let comment_num = post["comment_id_list"].length
+        time = time.replace("%s", temp[0]).replace("%s", temp[1]).replace("%s", temp[2]).replace("%s", temp[3]).replace("%s", temp[4]);
+        post_string += post_card.replace("%s", name).replace("%s", time).replace("%s", post["title"]).replace("%d", comment_num).replace("%d", post["like_num"]);
+      });
+      $(".card").html(post_string);
+    }
+    $(document).ready(function () {
+      show_post_list(get_post_list(currentWeek));
+    })
+    function click_search() {
+      let week = $('#week_input').val();
+      if(!week)
+        week = 0;
+      show_post_list(get_post_list(week));
+    }
+    function get_complete_post_list(week, complete) {  // if complete -> true, else false
+      let sorting_method = $('#sorting option:selected').val();
+      if (sorting_method == "추천순")
+        sorting_method = 'like';
+      else
+        sorting_method = 'time';
+      
+      let ret = []
+      $.ajax({
+        type: "POST",
+        url: "/api/getCompletePostList",
+        data: {"week":week, "sorting_method" : sorting_method},
+        async:false,
+        success: function(response) {
+          if(response["result"] == "success") {
+            if(complete == true)
+              ret = response["complete"];
+            else
+              ret = response["in_progress"];
+          }
+          else {
+            alert("서버 오류로 글 목록을 불러오지 못했습니다")
+          }
+        }
+      })
+      return ret;
+    }
+    function in_progress_qes() {
+      let week = $('#week_input').val();
+      if(!week)
+        week = 0;
+      show_post_list(get_complete_post_list(week, false));
+    }
+    function complete_qes() {
+      let week = $('#week_input').val();
+      if(!week)
+        week = 0;
+      show_post_list(get_complete_post_list(week, true));
+    }
+
     function kensaku() {
       week = $('#week_input').val();
       get_post_list();
@@ -140,9 +255,9 @@
         </div>
       </div>
       <div>
-        <input type='text' placeholder='주차를 입력하세요' class='bottom-border' id = "week_input" />
+        <input type='number' placeholder='0' class='bottom-border' id = "week_input" />
         <p class="week_searching">주차 프로젝트</p>
-        <a onclick="" class="button is-success login_button">
+        <a onclick="click_search()" class="button is-success login_button">
           검색
         </a>
         <div class="field week_searching filter">
@@ -159,46 +274,11 @@
         </p>
       </div>
 
-      <a class="sub_nav answer_stay" href=""> 답변 진행중 /</a>
-      <a class="sub_nav answer_success" href=""> 완료된 답변</a>
+      <a onclick="in_progress_qes()" class="sub_nav answer_stay"> 답변 진행중 /</a>
+      <a onclick="complete_qes()" class="sub_nav answer_success"> 완료된 답변</a>
       
       <div class="card">
-       
-        <div class="card-content">
-          <div class="media">
-            <div class="media-left">
-              <figure class="image is-48x48">
-                <img
-                  class="is-rounded"
-                  src="https://bulma.io/assets/images/placeholders/96x96.png"
-                  alt="Placeholder image"
-                />
-              </figure>
-            </div>
-            <div class="media-content">
-              <p class="title is-4"><a>다니엘 </a></p>
-              <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-            </div>
-          </div>
 
-          <div class="content_" onclick = "location.href = '/post'" style = "cursor:pointer;">
-            <h1>
-              <p>c언어 포인터</p>
-            </h1>
-
-          </div>
-          <div class="footer_btn">
-            <a onclick="" class="button is-link is-light login_button"">
-              댓글 &nbsp; <p>1</p>
-              </a>
-              <a onclick="" class=" button is-success login_button"">
-              나도 궁금해요 &nbsp; <p>1</p>
-            </a>
-
-          </div>
-
-        </div>
-        
       </div>
       
     </div>

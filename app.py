@@ -243,10 +243,13 @@ def getCompletePostList():
 #return jsonify({'result': 'success'}, {'list': ret})
 
 @app.route('/api/select', methods = ["POST"])
-@jwt_required()
+#@jwt_required()
 def select():
     id = request.form['post_id']
+    print(id)
     reply_id = request.form['reply_id']
+    print(reply_id)
+    print(type(reply_id))
     temp_num = len(list(db.post.find({})))
     db.post.update_one({'id' : int(id)}, {"$set" : {"solved_comment_id" : int(reply_id)}})
     if temp_num != len(list(db.post.find({}))):
@@ -255,7 +258,6 @@ def select():
         return jsonify({'result' : 'fail'})
 
 @app.route('/api/createPost', methods=['POST']) #
-@jwt_required()
 def createPost():
     print("눌러짐")
     #줄바꿈 문자를 <br>로 바꾸기
@@ -277,7 +279,8 @@ def createPost():
 
     post['title'] = request.form['title']
     post['content'] = request.form['content']
-    post["author_id"] = get_jwt_identity()
+    #post["author_id"] = get_jwt_identity()
+    post["author_id"] = 2
     post["id"] = getNextSequence("post")
     post['like_num'] = 0
     post['like_user_id_list'] = []

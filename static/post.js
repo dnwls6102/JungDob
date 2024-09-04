@@ -17,9 +17,9 @@ function pressPostLike(){
       });
 }
 
-function select(id){
+function select(id, reply_id){
 
-    let reply_id = $('#id').val();
+    console.log(reply_id)
 
     $.ajax({
         type: "POST",

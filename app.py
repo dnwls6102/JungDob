@@ -37,7 +37,13 @@ def post():
 
 @app.route('/main')
 def main():
-    return render_template("main.html")
+    ret = sorted(list(db.post.find({})), key=itemgetter('time'), reverse=True)
+    users = list(db.user.find({}))
+    for _post in ret:
+        _post.pop('_id')
+    print(ret)
+    print(users)
+    return render_template("main.html", posts = ret, users = users, name = 'Null')
 
 
 # API
@@ -132,7 +138,8 @@ def checkIDUsed():
 
 @app.route('/api/getPostList', methods=['POST']) #
 def getPostList():
-    week = request.form['week']
+    print("눌림")
+    week = request.form.get(['week'])
     print(week)
     sorting_method = request.get_json()['sorting_method']
     if sorting_method == "time":

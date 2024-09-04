@@ -1,6 +1,7 @@
 from pymongo import MongoClient, ReturnDocument
 from flask import Flask, render_template, jsonify, request
 from datetime import datetime
+from operator import itemgetter
 
 app = Flask(__name__)
 
@@ -75,7 +76,7 @@ def signUp():
     #image.save('./static/user_iamge/' + user['image'])
     return jsonify({'result': 'success'})
 
-@app.route('/api/checkIDUsed', methods=['POST'])
+@app.route('/api/checkIDUsed', methods=['POST']) #
 def checkIDUsed():
     print("checkIDUsed")
     temp_id = request.get_json()["account_id"]
@@ -90,19 +91,33 @@ def checkIDUsed():
     #return "success"
 
 
-@app.route('/api/getPostList', methods=['GET'])
+@app.route('/api/getPostList', methods=['POST']) #
 def getPostList():
-    user_id = request.form['user_id']
-    week = request.form['week']
-    sorting_method = request.form['sorting_method']
+    week = request.get_json()['week']
+    print(week)
+    sorting_method = request.get_json()['sorting_method']
     if sorting_method == "time":
-        ret = db.post.find({"$and": [{"author_id":user_id}, {"week", week}]}).sort({"time":-1})
+        #ret = list(db.post.find({"week": week}))
+        ret = sorted(list(db.post.find({"week": week})), key=itemgetter('time'), reverse=True)
     elif sorting_method == "like":
-        ret = db.post.find({"$and": [{"author_id":user_id}, {"week", week}]}).sort({"like_num":-1})
-    return jsonify({'result': 'success'}, {'list': ret})
+        ret = sorted(list(db.post.find({"week": week})), key=itemgetter('like_num'), reverse=True)
+    for _post in ret:
+        _post.pop('_id')
+    print(ret)
+    return jsonify({'result': 'success', 'post': ret})
+
+# my page post list
+#user_id = request.form['user_id']
+#week = request.form['week']
+#sorting_method = request.form['sorting_method']
+#if sorting_method == "time":
+#    ret = db.post.find({"$and": [{"author_id":user_id}, {"week", week}]}).sort({"time":-1})
+#elif sorting_method == "like":
+#    ret = db.post.find({"$and": [{"author_id":user_id}, {"week", week}]}).sort({"like_num":-1})
+#return jsonify({'result': 'success'}, {'list': ret})
 
 
-@app.route('/api/createPost', methods=['POST'])
+@app.route('/api/createPost', methods=['POST']) #
 def createPost():
     post = request.get_json()
     post["id"] = getNextSequence("post")
@@ -110,7 +125,8 @@ def createPost():
     post['like_user_id_list'] = []
     post['solved_comment_id'] = -1
     post['comment_id_list'] = []
-    post['time'] = datetime.now()
+    post['time'] = datetime.now().strftime("%Y %m %d %H %M %S %f")
+    print(post)
     db.post.insert_one(post)
     return jsonify({'result': 'success'})
 

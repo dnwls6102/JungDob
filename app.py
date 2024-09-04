@@ -4,7 +4,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-client = MongoClient('13.125.162.42', 27017)
+client = MongoClient('mongodb://root:root@13.125.162.42', 27017)
 db = client.jungdob
 
 @app.route('/')
@@ -62,7 +62,7 @@ def signIn():
     print("hello world")
     return jsonify({'result': 'success'})
 
-@app.route('/api/signUp', methods=['POST'])
+@app.route('/api/signUp', methods=['POST']) #
 def signUp():
     print("signUp")
     user = request.get_json()
@@ -70,20 +70,25 @@ def signUp():
     user["id"] = getNextSequence("user")
     #extension = image.filename.split('.')[1]
     #user['image'] = user['id'] + '.' + extension
+    print(user)
     db.user.insert_one(user)
     #image.save('./static/user_iamge/' + user['image'])
     return jsonify({'result': 'success'})
 
 @app.route('/api/checkIDUsed', methods=['POST'])
 def checkIDUsed():
-    temp_id = request.form['account_id']
-    temp_cursor = db.user.find_one({'account_id':temp_id})
-    is_id_used = temp_cursor.count()
+    print("checkIDUsed")
+    temp_id = request.get_json()["account_id"]
+    print(temp_id)
+    is_id_used = len(list(db.user.find({'account_id':temp_id})))
+    print(is_id_used)
     if is_id_used > 0:
         ret = True
     elif is_id_used == 0:
         ret = False
     return jsonify({'result': 'success', 'isUsed': ret})
+    #return "success"
+
 
 @app.route('/api/getPostList', methods=['GET'])
 def getPostList():

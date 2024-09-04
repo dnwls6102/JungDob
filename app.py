@@ -22,11 +22,7 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-<<<<<<< HEAD
     return session.get(user_id)
-=======
-    return user_id
->>>>>>> 172e4956c50ccb7dc606d7533874ef510c57142c
 
 
 @app.route('/')
@@ -101,21 +97,14 @@ def signIn2():
     account_pw = request.form['account_pw']
     account = db.user.find_one({'account_id':account_id})
     if account != None and account['account_pw'] == account_pw:
-<<<<<<< HEAD
         #user = User(account_id, account_pw, account['id'])
         #login_user(user)
         print(session)
         session['account_id'] = account_id
         session['account_pw'] = account_pw
         session['id'] = account['id']
-        print(session['id'])
+        print(session['account_id'])
         return jsonify({'result': 'success'})
-=======
-        user = User(account_id, account_pw, account['id'])
-        login_user(user)
-        print(current_user())
-        return jsonify({'result' : 'success'})
->>>>>>> 172e4956c50ccb7dc606d7533874ef510c57142c
     else:
         return jsonify({'result': 'fail'})
 

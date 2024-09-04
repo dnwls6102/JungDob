@@ -45,24 +45,32 @@
     }
   </style>
   <script>
-    let account_id= $('#inputID').val()
-    let account_pw = $('#inputPW').val()
-    var test = 5
-  
+    
+    
     function login() {
+      let account_id= $('#inputID').val()
+      console.log(account_id)
+      let account_pw = $('#inputPW').val()
+      console.log(account_pw)
       $.ajax({
         type: "POST",
         url: "/api/login",
-        data: { title_give : "봄날은 간다"},
+        data: { user_id : account_id, user_pw : account_pw },
         success: function (response) { // 성공하면
           if (response['result'] == 'success') {
             console.log(response)
-          }else(
-            alert("실패")
+          }
+          else if (response['result'] == 'noMatch') {
+            alert("아이디 혹은 비밀번호를 다시 확인하세요.")
+          }
+          else(
+            alert("서버 오류")
           )
         }
       })
     }
+
+    
   </script>
 </head>
 

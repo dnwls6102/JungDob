@@ -82,6 +82,7 @@
   </style>
   <script>
     let week = 99;
+    window.onload = get_post_list()
     function get_post_list() {
       let sorting_method = $('#sorting option:selected').val();
       if (sorting_method == '추천순') {
@@ -97,7 +98,8 @@
         data: {week : week, sorting_method : sorting_method},
         success: function(response) {
           if(response["result"] == "success") {
-            
+            let posts = response['post']
+            console.log(posts)
           }
           else {
             alert("서버 오류로 글 목록을 불러오지 못했습니다")

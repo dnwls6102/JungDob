@@ -19,7 +19,7 @@ jwt = JWTManager(app)
 def index():
     cur_user = get_jwt_identity()
     if not cur_user:
-        return render_template("main.html")
+        return redirect(url_for('main'))
     else:
         return render_template("index.html")
 
@@ -34,8 +34,20 @@ def writeQ():
 @app.route('/post', methods=['GET'])
 def post():
     id_receive = request.args.get('id')
+    post = list(db.post.find({'id' : int(id_receive)}))
+    post = post[0]
+    authorInfo = list(db.user.find({'id' : post['author_id']}))[0]
+    reply_db = []
+    for i in post['comment_id_list']:
+        reply_db.append()
+    temp_reply_num = 0
+    print(authorInfo)
     print(id_receive)
-    return render_template("post.html")
+    print(post)
+    for i in post['comment_id_list']:
+        temp_reply_num += 1
+    return render_template("post.html", post = post, authorInfo = authorInfo, reply_num = temp_reply_num,
+                           reply_list = post['comment_id_list'], reply_db = reply_db)
 
 @app.route('/main')
 def main():

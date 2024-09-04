@@ -54,16 +54,17 @@
             console.log(user_name)
             let account_pwCheck = $('#inputPwCheck').val()
             console.log(account_pwCheck)
-            let jungle_class = $("#jungleclass").change(function(){
-            console.log($(this).val()); //value값 가져오기
-            });
+            let jungle_class = $('#jungle_class').find(":selected").val();
+            // $("#jungle_class :selected").change(function(){
+            // console.log($(this).val()); //value값 가져오기
+            // });
 
             console.log(jungle_class)
             let slack_id = $('#slack_id').val()
             console.log(slack_id)
             let jungle_MBTI = $('#mbti').val()
             console.log(jungle_MBTI)
-            let picture = $('picture').val()
+            let picture = $('#picture').val()
             console.log(picture)
 
             if (account_id == "") {
@@ -89,7 +90,7 @@
             $.ajax({
                 type: "POST",
                 url: "/api/signUp",
-                data: { account_id: account_id , account_pw: account_pw, user_name:user_name, jungle_class: jungle_class, slack_id: slack_id, user_MBTI:jungle_MBTI, user_picture:picture },
+                data: { account_id: account_id , account_pw: account_pw, user_name:user_name, jungle_class: jungle_class, slack_id: slack_id, user_MBTI:jungle_MBTI, picture:picture },
                 success: function (response) { // 성공하면
                     if (response['result'] == 'success') {
                         // location.href = './main'
@@ -170,7 +171,7 @@
                 <div class="addImage" id="image-show"></div>
                 <div class="file is-success">
                     <label class="file-label">
-                        <input class="file-input" type="file" name="resume" onchange="loadFile(this)" />
+                        <input id="picture"class="file-input" type="file" name="resume" onchange="loadFile(this)" />
                         <span class="file-cta">
                             <span class="file-label">사진 업로드</span>
                         </span>

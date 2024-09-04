@@ -68,7 +68,6 @@ def getUserimage():
     picture = open('./static/user_picture/' + user['id'] + '.jpg')
     return jsonify({'result': 'success', 'file': picture})
 
-<<<<<<< HEAD
 @app.route('/api/login', methods = ['POST'])
 def login():
     if request.method == "POST":
@@ -95,31 +94,11 @@ def idCheck():
             return jsonify({'result' : 'success'})
         else :
             return jsonify({'result' : 'noMatch'})
-=======
-#@app.route('/api/login', methods = ['POST'])
-#def login():
-#    if request.method == "POST":
-#        print("받아옴")
-#        id_receive = request.form['user_id']
-#        pw_receive = request.form['user_pw']
-#
-#        result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
-#
-#        if len(result) == 0:
-#            return jsonify({'result' : 'noMatch'})
-#        else :
-#            return jsonify({'result' : 'success'})
-#
-#    return jsonify({'result': 'fail'})
-    
->>>>>>> de714ee80d29db9c92ba64543cddc39fb11e4d1d
 
 @app.route('/api/signIn', methods=['POST'])
 def signIn2():
-    #account_id = request.form['account_id']
-    #account_pw = request.form['account_pw']
-    account_id = request.get_json()['account_id']
-    account_pw = request.get_json()['account_pw']
+    account_id = request.form['account_id']
+    account_pw = request.form['account_pw']
     account = db.user.find_one({'account_id':account_id})
     user_id = account["id"]
     if account != None and account['account_pw'] == account_pw:
@@ -137,13 +116,33 @@ def signOut():
 @app.route('/api/signUp', methods=['POST']) #
 def signUp():
     print("signUp")
-    user = request.get_json()
-    #image = request.file['image']
+    
+    account_id= request.form['account_id']
+    account_pw = request.form['account_pw']
+    user_name=request.form['user_name']
+    account_class= request.form['jungle_class']
+    slack_id= request.form['slack_id']
+    user_mbti= request.form['user_MBTI']
+    picture=request.form['picture']
+    
+    user ={
+        'account_id': account_id, 'account_pw' : account_pw,
+        'user_name':user_name,'MBTI':user_mbti,
+        'jungle_class':account_class,
+        'slack_id':slack_id,
+        'picture':picture
+    }
     user["id"] = getNextSequence("user")
+    db.user.insert_one(user)
+
+    # user = request.get_json()
+    #image = request.file['image']
+
     #extension = image.filename.split('.')[1]
     #user['image'] = user['id'] + '.' + extension
     print(user)
-    db.user.insert_one(user)
+    
+
     #image.save('./static/user_iamge/' + user['image'])
     return jsonify({'result': 'success'})
 

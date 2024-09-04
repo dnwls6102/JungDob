@@ -1,11 +1,12 @@
 function upload_post() {
     let title = $('#titleArea').val()
     let content = $('#contentArea').val()
+    let week = $('#week option:selected').val()
 
     $.ajax({
         type: "POST",
         url: "/api/createPost",
-        data: {post_title : title, post_content : content},
+        data: {title : title, content : content, week : week},
         success: function(response) {
             if (response['result'] == 'success') {
                 alert("업로드 완료")

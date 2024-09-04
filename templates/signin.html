@@ -24,6 +24,7 @@
         }
     </style>
     <script>
+        var a = 0;
         function id_DuplicateCheck() {
             let account_id = $('#inputID').val()
             console.log(account_id)
@@ -33,10 +34,12 @@
                 data: { user_id: account_id },
                 success: function (response) { // 성공하면
                     if (response['result'] == 'success') {
+                        a=1;
                         alert("사용하셔도 좋습니다.")
                     }
                     else if (response['result'] == 'noMatch') {
                         alert("중복되는 아이디 입니다.")
+                        $('#inputID').val("")
                     }
                     else (
                         alert("서버 오류")
@@ -78,12 +81,16 @@
                 return false;
             } if (account_pwCheck != account_pw) {
                 alert("패스워드가 다릅니다.")
+                $('#inputPwCheck').val("");
                 return false;
             } if (jungle_class == "") {
                 alert("정글 기수를 체크해주세요")
                 return false;
             } if (slack_id == "") {
                 alert("slack ID를 입력해주세요.")
+                return false;
+            }if (a != 1) {
+                alert("중복확인 버튼을 눌러주세요.")
                 return false;
             }
 
@@ -93,11 +100,12 @@
                 data: { account_id: account_id , account_pw: account_pw, user_name:user_name, jungle_class: jungle_class, slack_id: slack_id, user_MBTI:jungle_MBTI, picture:picture },
                 success: function (response) { // 성공하면
                     if (response['result'] == 'success') {
-                        // location.href = './main'
-                        alert('잘나왔네')
+                        
+                        alert('정답입니다.')
+                        location.href = './main'
                     }
                     else if (response['result'] == 'noMatch') {
-                    alert('아무것도 없었다')
+                    alert('오답입니다.')
                     }
 
                 }

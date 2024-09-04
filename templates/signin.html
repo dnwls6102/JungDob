@@ -20,7 +20,7 @@
             console.log(account_id)
             $.ajax({
                 type: "POST",
-                url: "/api/login",
+                url: "/api/signIn",
                 data: {user_id : account_id},
                 success: function (response) { // 성공하면
                 if (response['result'] == 'success') {
@@ -35,34 +35,6 @@
                 }
             })
             }
-            // function signin() {
-            //     function id_DuplicateCheck(){
-            //         let 
-            //     }
-                
-            //   let account_id= $('#inputID').val()
-            //   console.log(account_id)
-            //   let user_name =$('#').val()
-            
-            //   let account_pw = $('#inputPW').val()
-            //   console.log(account_pw)
-            //   $.ajax({
-            //     type: "POST",
-            //     url: "/api/signup",
-            //     data: { user_id : account_id, user_pw : account_pw },
-            //     success: function (response) { // 성공하면
-            //       if (response['result'] == 'success') {
-            //         console.log(response)
-            //       }
-            //       else if (response['result'] == 'noMatch') {
-            //         alert("아이디 혹은 비밀번호를 다시 확인하세요.")
-            //       }
-            //       else(
-            //         alert("서버 오류")
-            //       )
-            //     }
-            //   })
-            // }
           </script>
     </head>
     <body>
@@ -78,7 +50,7 @@
                     <input class="input" type="text" id="inputID">
                 </div>
                 <div class="control">
-                    <button class = "button is-success" onclick="id_DuplicateCheck()">중복 확인</button>
+                    <button class = "button is-success" id="#inputID" onclick="id_DuplicateCheck()">중복 확인</button>
                 </div>
             </div>
             <div class = "field">

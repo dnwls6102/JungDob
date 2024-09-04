@@ -56,6 +56,11 @@ def getUserimage():
     picture = open('./static/user_picture/' + user['id'] + '.jpg')
     return jsonify({'result': 'success', 'file': picture})
 
+@app.route('/api/login', methods = ['POST'])
+def login():
+    ID_receive = request.form['ID']
+    pw_receive = request.form['PW']
+    print(ID_receive, pw_receive)
 
 @app.route('/api/signIn', methods=['GET'])
 def signIn():

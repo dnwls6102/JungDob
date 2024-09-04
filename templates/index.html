@@ -8,9 +8,10 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
   <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 
+
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
-    </script>
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+  crossorigin="anonymous"></script>
 
   <style>
     .logo {
@@ -51,8 +52,8 @@
     function login() {
       $.ajax({
         type: "POST",
-        url: "/signin",
-        data: {account_id:'var', account_pw:'var'},
+        url: "/api/login",
+        data: { ID :account_id, PW : account_pw},
         success: function (response) { // 성공하면
           if (response['result'] == 'success') {
             alert(response['안녕']);
@@ -93,7 +94,7 @@
       <div class="field">
         <div class="home_button">
         <p class="control">
-          <a class="button is-success login_button">
+          <a class="button is-success login_button" onclick = "login()">
             Login
           </a>
         </p>

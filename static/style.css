@@ -35,10 +35,18 @@
 }
 
 .solved {
-    width : 500px;
-    height : 100px;
+    width : 160px;
     float : right;
     padding-top : 20px;
+}
+
+.user_info {
+    padding-top : 50px;
+}
+
+.user_image {
+    width : 32px;
+    height : 32px;
 }
 
 .user_info > div > span {
@@ -68,6 +76,21 @@
     margin-right : 10px;
     font-size : 22px;
     font-weight : bold;
+}
+
+.reply-content {
+    margin-top : 10px;
+    font-size : 18px;
+}
+
+.reply-osusume {
+    margin-top : 20px;
+}
+
+.reply-block {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding-bottom: 30px;
 }
 
 .addImage {

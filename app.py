@@ -4,7 +4,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-client = MongoClient('localhost', 27017)
+client = MongoClient('mongodb://root:root@13.125.162.42', 27017)
 db = client.jungdob
 
 @app.route('/')
@@ -27,6 +27,7 @@ def post():
 def main():
     return render_template("main.html")
 
+
 # API
 def getNextSequence(collection):
     temp = db.counter.find_one_and_update({'_id':collection}, 
@@ -48,28 +49,46 @@ def getUserInfo():
     })
     return jsonify({'result': 'success'}, user)
 
+@app.route('/api/getUserimage', methods=['GET'])
+def getUserimage():
+    user_id = request.form['user_id']
+    user = db.user.find_one({"id":user_id})
+    picture = open('./static/user_picture/' + user['id'] + '.jpg')
+    return jsonify({'result': 'success', 'file': picture})
+
 
 @app.route('/api/signIn', methods=['GET'])
 def signIn():
+    print("hello world")
     return jsonify({'result': 'success'})
 
-@app.route('/api/signUp', methods=['POST'])
+@app.route('/api/signUp', methods=['POST']) #
 def signUp():
+    print("signUp")
     user = request.get_json()
+    #image = request.file['image']
     user["id"] = getNextSequence("user")
+    #extension = image.filename.split('.')[1]
+    #user['image'] = user['id'] + '.' + extension
+    print(user)
     db.user.insert_one(user)
+    #image.save('./static/user_iamge/' + user['image'])
     return jsonify({'result': 'success'})
 
-@app.route('/api/checkIDUsed', methods=['GET'])
+@app.route('/api/checkIDUsed', methods=['POST'])
 def checkIDUsed():
-    temp_id = request.form['account_id']
-    temp_cursor = db.user.find_one({'account_id':temp_id})
-    is_id_used = temp_cursor.count()
+    print("checkIDUsed")
+    temp_id = request.get_json()["account_id"]
+    print(temp_id)
+    is_id_used = len(list(db.user.find({'account_id':temp_id})))
+    print(is_id_used)
     if is_id_used > 0:
         ret = True
     elif is_id_used == 0:
         ret = False
-    return jsonify({'result': 'success'}, {'isUsed': ret})
+    return jsonify({'result': 'success', 'isUsed': ret})
+    #return "success"
+
 
 @app.route('/api/getPostList', methods=['GET'])
 def getPostList():
@@ -100,7 +119,7 @@ def createPost():
 def getCurrentPost():
     post_id = request.form['post_id']
     post = db.post.find_one({"id":post_id})
-    return jsonify({'result': 'success'}, post)
+    return jsonify({'result': 'success', "post": post})
 
 @app.route('/api/getCommentList', methods=['GET'])
 def getCommentList():
@@ -110,7 +129,7 @@ def getCommentList():
     comment_list = []
     for id in comment_id_list:
         comment_list.append(db.post.find_one({'id':id}))
-    return jsonify({'result': 'success'}, {'comments':comment_list})
+    return jsonify({'result': 'success', 'comments':comment_list})
 
 @app.route('/api/deletePost', methods=['DELETE'])
 def deletePost():

@@ -76,8 +76,11 @@ def login():
     
 
 @app.route('/api/signIn', methods=['GET'])
-def signIn():
-    print("hello world")
+def signin():
+    if request.method == "POST":
+    print("들어왔음")    
+    id_r
+
     return jsonify({'result': 'success'})
 
 @app.route('/api/signUp', methods=['POST']) #

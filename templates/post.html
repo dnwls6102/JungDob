@@ -6,42 +6,12 @@
   <title>정답 : 정글의 답을 찾다</title>
   <link rel="stylesheet" type="text/css" href="../static/style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous">
-
-  </script>
-
-  <script>
-    function comment() {
-      console.log(1);
-
-    }
-  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
   <script>
     function creat_comment() {
-      let comment = $('#comment').val()
-      console.log(comment)
       console.log(1)
-      console.log(comment)
-      $.ajax({
-        type: "POST",
-        url: "/api/createComment",
-        data: { post_id: comment },
-        success: function (response) { // 성공하면
-          if (response['result'] == 'success') {
-            alert("댓글이 등록되었습니다.")
-          }
-          else if (response['result'] == 'noMatch') {
-            alert("댓글을 입력해주세요.")
-            $('#inputID').val("")
-          }
-          else (
-            alert("서버 오류")
-          )
-        }
-      })
-    }
-    function createComment() {
       let comment = $('#comment').val()
+      console.log(comment)
       console.log(1)
       // console.log(comment)
       // $.ajax({
@@ -62,7 +32,6 @@
       //   }
       // })
     }
-
   </script>
 
 </head>
@@ -71,6 +40,8 @@
   <div class="content wrap">
     <!-- 내비게이션 바 -->
     <div id="Inline_block">
+      <script src="../static/post.js"></script>
+
       <a href="/main">
         <img class="top_left_logo" src="/static/source/jungdob_logo.png" />
       </a>
@@ -155,7 +126,7 @@
         </div>
       </div>
     </div>
-    <div class="reply-content">
+    <div class="reply-content" id="{{i['id']}}">
       <!-- 댓글 작성 시 엔터 누르면 <br>태그가 활성화되게끔 해야될듯 -->
       <p>
         {{i['content']}}
@@ -169,11 +140,12 @@
       <p class="control">
         <button class="button is-link is-light">안돼요 {{i['hate_num']}}</button>
       </p>
+      <p class="control">
+        <button class="button is-warning is-hovered" id='{{post[' id']}}' onclick='select(this.id)'>채택하기</button>
+      </p>
     </div>
     {%endfor%}
-
-
-
+  </div>
 
 </body>
 

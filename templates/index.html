@@ -54,16 +54,14 @@
         type: "POST",
         url: "/api/signIn",
         data: { account_id : account_id, account_pw : account_pw },
+        async:false,
         success: function (response) { // 성공하면
           if (response['result'] == 'success') {
             location.href = './main'
           }
-          else if (response['result'] == 'noMatch') {
+          else{
             alert("아이디 혹은 비밀번호를 다시 확인하세요.")
           }
-          else(
-            alert("서버 오류")
-          )
         }
       })
     }

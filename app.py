@@ -45,6 +45,7 @@ def writeQ():
 @app.route('/post', methods=['GET'])
 def post():
     id_receive = request.args.get('id')
+    print(id_receive)
     post = list(db.post.find({'id' : int(id_receive)}))
     post = post[0]
     authorInfo = list(db.user.find({'id' : post['author_id']}))[0]
@@ -118,18 +119,18 @@ def getUserimage():
         return jsonify({'result' : 'success'})
     return jsonify({'result': 'fail'})
 
-@app.route('/api/signIn', methods = ['POST'])
-def idCheck():
-    if request.method == "POST":
-        print("받아옴")
-        id_receive = request.form['user_id']
-        print(id_receive)
-        result = list(db.user.find({'account_id' : id_receive}))
-        print(result)
-        if len(result) == 0:
-            return jsonify({'result' : 'success'})
-        else :
-            return jsonify({'result' : 'noMatch'})
+#@app.route('/api/signIn', methods = ['POST'])
+#def idCheck():
+#    if request.method == "POST":
+#        print("받아옴")
+#        id_receive = request.form['user_id']
+#        print(id_receive)
+#        result = list(db.user.find({'account_id' : id_receive}))
+#        print(result)
+#        if len(result) == 0:
+#            return jsonify({'result' : 'success'})
+#        else :
+#            return jsonify({'result' : 'noMatch'})
 
 @app.route('/api/signIn', methods=['POST'])
 def signIn2():
@@ -148,6 +149,7 @@ def signOut():
     response = jsonify({'result': 'success'})
     unset_jwt_cookies(response)
     return response
+
 
 @app.route('/api/signUp', methods=['POST']) #
 def signUp():
@@ -240,6 +242,17 @@ def getCompletePostList():
 #    ret = db.post.find({"$and": [{"author_id":user_id}, {"week", week}]}).sort({"like_num":-1})
 #return jsonify({'result': 'success'}, {'list': ret})
 
+@app.route('/api/select', methods = ["POST"])
+@jwt_required()
+def select():
+    id = request.form['post_id']
+    reply_id = request.form['reply_id']
+    temp_num = len(list(db.post.find({})))
+    db.post.update_one({'id' : int(id)}, {"$set" : {"solved_comment_id" : int(reply_id)}})
+    if temp_num != len(list(db.post.find({}))):
+        return jsonify({'result' : 'success'})
+    else :
+        return jsonify({'result' : 'fail'})
 
 @app.route('/api/createPost', methods=['POST']) #
 @jwt_required()
@@ -298,6 +311,17 @@ def getCommentList():
         temp.pop('_id')
         comment_list.append(temp)
     return jsonify({'result': 'success', 'comments':comment_list})
+
+# input {int post_id, int comment_id}
+@app.route('/api/solveProblem', methods=['POST'])
+def solveProblem():
+    post_id = int(request.form['post_id'])
+    comment_id = request.form['comment_id']
+    post = db.post.find({"id":post_id})
+    post["solved_comment_id"] = comment_id
+    db.post.delete_one({"id":post_id})
+    db.post.insert_one(post)
+    return jsonify({'result': 'success'})
 
 @app.route('/api/deletePost', methods=['DELETE'])
 def deletePost():

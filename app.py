@@ -20,9 +20,9 @@ class User(UserMixin):
         self.account_id = account_id
         self.account_pw = account_pw
 
-#@login_manager.user_loader
-#def load_user(user_id):
-#    return user_repo.get(user_id)
+@login_manager.user_loader
+def load_user(user_id):
+    return user_id
 
 
 @app.route('/')
@@ -93,17 +93,17 @@ def login():
 
 @app.route('/api/signIn', methods=['POST'])
 def signIn2():
-    account_id = request.get_json()['account_id']
-    account_pw = request.get_json()['account_pw']
+    account_id = request.form['account_id']
+    account_pw = request.form['account_pw']
     account = db.user.find_one({'account_id':account_id})
     print(account, account_pw)
     if account != None and account['account_pw'] == account_pw:
         user = User(account_id, account_pw, account['id'])
         login_user(user)
         print(current_user())
-        return redirect(url_for("/main"))
+        return jsonify({'result' : 'success'})
     else:
-        return jsonify({'result': 'fales'})
+        return jsonify({'result': 'fail'})
 
 @app.route('/api/signOut', methods=['GET'])
 def signOut():

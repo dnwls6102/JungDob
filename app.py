@@ -57,7 +57,7 @@ def post():
             like_num = 0
             hate_num = 0
             print(x)
-            if x['author_id'] == i :
+            if x['id'] == i :
                 for t in x['like_user_id_list']:
                     like_num += 1
                 for h in x['hate_user_id_list']:

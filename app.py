@@ -105,7 +105,7 @@ def signIn2():
         session['account_id'] = account_id
         session['account_pw'] = account_pw
         session['id'] = account['id']
-        print(session['id'])
+        print(session['account_id'])
         return jsonify({'result': 'success'})
     else:
         return jsonify({'result': 'fail'})

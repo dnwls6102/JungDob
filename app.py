@@ -27,7 +27,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    if session["id"] == "":
+    if "id" in session:
         return render_template("index.html")
     else:
         return render_template("main.html")

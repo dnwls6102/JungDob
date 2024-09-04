@@ -98,66 +98,62 @@
       </div>
     </div>
 
-      <div class="post_title" id="Inline_block">
-        <span>{{post['title']}}</span>
-        <!-- javascript 혹은 jquery로 display속성을 block으로 변경하기 -->
-        <!-- 해결 / 미해결 버튼의 id값은 게시글 고유의 id 값으로 설정하기 -->
-        <div class="solved">
-          {%if post['solved_comment_id'] == -1 %}
-            <button class="button is-active">미해결</button>
-          {%else%}
-            <button class="button is-success is-active">해결</button>
-          {%endif%}
+    <div class="post_title" id="Inline_block">
+      <span>{{post['title']}}</span>
+      <!-- javascript 혹은 jquery로 display속성을 block으로 변경하기 -->
+      <!-- 해결 / 미해결 버튼의 id값은 게시글 고유의 id 값으로 설정하기 -->
+      <div class="solved">
+        {%if post['solved_comment_id'] == -1 %}
+        <button class="button is-active">미해결</button>
+        {%else%}
+        <button class="button is-success is-active">해결</button>
+        {%endif%}
+      </div>
+    </div>
+
+    <div class="user_info" id="Inline_block">
+      <!-- 사용자 이미지 -->
+      <div class="media">
+        <div class="media-left">
+          <figure class="image is-48x48">
+            <img class="is-rounded" src="https://bulma.io/assets/images/placeholders/96x96.png"
+              alt="Placeholder image" />
+          </figure>
+        </div>
+        <div class="media-content">
+          <!-- 아이디 및 이름 받아오기 : DB에서 아이디와 이름 각각 받아와서 변수로 올리기 -->
+          <p class="title is-4">{{authorInfo['user_name']}} ({{authorInfo['slack_id']}})</p>
+          <p class="subtitle is-6">{{post['time']}}</p>
         </div>
       </div>
+    </div>
 
-      <div class="user_info" id="Inline_block">
-        <!-- 사용자 이미지 -->
-        <div class="media">
-          <div class="media-left">
-            <figure class="image is-48x48">
-              <img
-                class="is-rounded"
-                src="https://bulma.io/assets/images/placeholders/96x96.png"
-                alt="Placeholder image"
-              />
-            </figure>
-          </div>
-          <div class="media-content">
-            <!-- 아이디 및 이름 받아오기 : DB에서 아이디와 이름 각각 받아와서 변수로 올리기 -->
-            <p class="title is-4">{{authorInfo['user_name']}} ({{authorInfo['slack_id']}})</p>
-            <p class="subtitle is-6">{{post['time']}}</p>
-          </div>
-        </div>
-      </div>
+    <!-- db에서 글 가져오기 ==> 줄바꿈은 어떻게? <br>태그 -->
+    <div class="post_content">
+      <p>
+        {{post['content']}}
+      </p>
+    </div>
 
-      <!-- db에서 글 가져오기 ==> 줄바꿈은 어떻게? <br>태그 -->
-      <div class="post_content">
-        <p>
-          {{post['content']}}
-        </p>
-      </div>
+    <!-- 궁금해요 한 사람들 숫자 받아오기 : db에서 숫자 꺼내와서 변수로 대입 -->
+    <div class="curious_button">
+      <button class="button is-success" id="">나도 궁금해요 {{post['like_num']}}</button>
+    </div>
 
-      <!-- 궁금해요 한 사람들 숫자 받아오기 : db에서 숫자 꺼내와서 변수로 대입 -->
-      <div class="curious_button">
-        <button class="button is-success" id = "">나도 궁금해요 {{post['like_num']}}</button>
+    <div class="answer_area">
+      <!-- 댓글 단 사람들 숫자 받아오기 : db에서 숫자 꺼내와서 변수로 대입 -->
+      <h2>{{reply_num}}개의 댓글</h2>
+      <div class="control">
+        <textarea
+          class="textarea has-fixed-size"
+          placeholder="정글러님들의 답변을 기다립니다."
+          id ="comment"
+        ></textarea>
       </div>
-
-      <div class="answer_area">
-        <!-- 댓글 단 사람들 숫자 받아오기 : db에서 숫자 꺼내와서 변수로 대입 -->
-        <h2>{{reply_num}}개의 댓글</h2>
-        <div class="control">
-          <textarea
-            class="textarea has-fixed-size"
-            id = "answer_content"
-            placeholder="내가 죽일놈이지 뭐"
-          ></textarea>
-        </div>
-      </div>
-
-      <div id="float_right">
-        <button onclick="press_comment()" class="button is-success" >답변하기</button>
-      </div>
+    </div>
+    <div id="float_right">
+      <button class="button is-success" onclick="press_comment()">답변하기</button>
+    </div>
       
       {% for i in reply_db %}
       <!-- 댓글 블록 -->
@@ -207,5 +203,4 @@
       
           
 
-  </body>
 </html>

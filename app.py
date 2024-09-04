@@ -300,6 +300,17 @@ def getCommentList():
         comment_list.append(temp)
     return jsonify({'result': 'success', 'comments':comment_list})
 
+# input {int post_id, int comment_id}
+@app.route('/api/solveProblem', methods=['POST'])
+def solveProblem():
+    post_id = int(request.form['post_id'])
+    comment_id = request.form['comment_id']
+    post = db.post.find({"id":post_id})
+    post["solved_comment_id"] = comment_id
+    db.post.delete_one({"id":post_id})
+    db.post.insert_one(post)
+    return jsonify({'result': 'success'})
+
 @app.route('/api/deletePost', methods=['DELETE'])
 def deletePost():
     post_id = request.form['post_id']

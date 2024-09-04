@@ -31,7 +31,7 @@ def signin():
 def writeQ():
     return render_template("writeQ.html")
 
-@app.route('/post')
+@app.route('/post', methods=['GET'])
 def post():
     return render_template("post.html")
 

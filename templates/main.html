@@ -84,6 +84,7 @@
   <script>
     const currentWeek = 0;
     const post_card = `
+<div class="card">
 <div class="card-content">
     <div class="media">
         <div class="media-left">
@@ -114,6 +115,7 @@
             나도 궁금해요 &nbsp; <p>%d</p>
         </a>
     </div>
+</div>
 </div>
 `
     function get_post_list(week) {
@@ -169,10 +171,10 @@
         time = time.replace("%s", temp[0]).replace("%s", temp[1]).replace("%s", temp[2]).replace("%s", temp[3]).replace("%s", temp[4]);
         post_string += post_card.replace("%s", name).replace("%s", time).replace("%s", post["title"]).replace("%d", comment_num).replace("%d", post["like_num"]);
       });
-      $(".card").html(post_string);
+      $(".card-rapper").html(post_string);
     }
     $(document).ready(function () {
-      show_post_list(get_post_list(currentWeek));
+      //show_post_list(get_post_list(currentWeek));
     })
     function click_search() {
       let week = $('#week_input').val();
@@ -287,6 +289,7 @@
       <a onclick="in_progress_qes()" class="sub_nav answer_stay"> 답변 진행중 /</a>
       <a onclick="complete_qes()" class="sub_nav answer_success"> 완료된 답변</a>
       
+      <div class="card-rapper">
       {% for i in posts %}
       <div class="card">
        
@@ -331,6 +334,7 @@
         
       </div>
       {%endfor%}
+    </div>
       
     </div>
     <a href = "./writeQ" class="is-success create_answer">

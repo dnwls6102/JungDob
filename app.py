@@ -22,11 +22,7 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-<<<<<<< HEAD
     return session.get(user_id)
-=======
-    return user_id
->>>>>>> 172e4956c50ccb7dc606d7533874ef510c57142c
 
 
 @app.route('/')
@@ -95,13 +91,14 @@ def login():
     return jsonify({'result': 'fail'})
     
 
-@app.route('/api/signIn', methods=['POST'])
+@app.route('/api/signIn', methods=['GET', 'POST'])
 def signIn2():
+    if request.method == "GET":
+        return redirect('/main')
     account_id = request.form['account_id']
     account_pw = request.form['account_pw']
     account = db.user.find_one({'account_id':account_id})
     if account != None and account['account_pw'] == account_pw:
-<<<<<<< HEAD
         #user = User(account_id, account_pw, account['id'])
         #login_user(user)
         print(session)
@@ -110,12 +107,6 @@ def signIn2():
         session['id'] = account['id']
         print(session['id'])
         return jsonify({'result': 'success'})
-=======
-        user = User(account_id, account_pw, account['id'])
-        login_user(user)
-        print(current_user())
-        return jsonify({'result' : 'success'})
->>>>>>> 172e4956c50ccb7dc606d7533874ef510c57142c
     else:
         return jsonify({'result': 'fail'})
 
@@ -208,9 +199,9 @@ def createPost():
     post['comment_id_list'] = []
     post['time'] = datetime.now().strftime("%Y %m %d %H %M %S %f")
     print(post)
-    tempnum = len(list(db.post.find()))
+    tempnum = db.post.count()
     db.post.insert_one(post)
-    if tempnum != len(list(db.post.find())) :
+    if tempnum != db.post.count() :
          return jsonify({'result': 'success'})
     else :
         return jsonify({'result' : 'fali'})

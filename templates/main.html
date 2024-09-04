@@ -71,10 +71,27 @@
       text-align: center;
       color: black;
     }
-    .login_button{
+
+    .login_button {
       margin-top: 5px;
     }
   </style>
+  <script>
+    function openClose() {
+      // id 값 post-box의 display 값이 block 이면(= 눈에 보이면)
+      if ($("#post-box").css("display") == "block") {
+        // post-box를 가리고
+        $("#post-box").hide();
+        // 다시 버튼을 클릭하면, 박스 열기를 할 수 있게 텍스트 바꿔두기
+        $("#btn-post-box").text("포스팅 박스 열기");
+      } else {
+        // 아니면(눈에 보이지 않으면) post-box를 펴라
+        $("#post-box").show();
+        // 다시 버튼을 클릭하면, 박스 닫기를 할 수 있게 텍스트 바꿔두기
+        $("#btn-post-box").text("포스팅 박스 닫기");
+      }
+    }
+  </script>
 </head>
 
 <body>
@@ -93,12 +110,12 @@
         <img class = "top_left_logo" src = "/static/source/jungdob_logo.png"/>
       </a>
       <div>
-        <input type='text' placeholder='주차를 입력하세요' class='bottom-border'/>
+        <input type='text' placeholder='주차를 입력하세요' class='bottom-border' />
         <p class="week_searching">주차 프로젝트</p>
         <a onclick="" class="button is-success login_button">
-            검색
-          </a>
-          <div class="field week_searching filter">
+          검색
+        </a>
+        <div class="field week_searching filter">
           <label class="label"></label>
           <div class="control">
             <div class="select">
@@ -109,43 +126,48 @@
               </select>
             </div>
           </div>
+        </div>
+        </p>
       </div>
-      </p>
-    </div>
 
-    <a class="sub_nav answer_stay" href=""> 답변 진행중 /</a>
-    <a class="sub_nav answer_success" href=""> 완료된 답변</a>
-    <div class="card">
-      <div class="card-content">
-        <div class="media">
-          <div class="media-left">
-            <figure class="image is-48x48">
-              <img src="" alt="Placeholder image" />
-            </figure>
+      <a class="sub_nav answer_stay" href=""> 답변 진행중 /</a>
+      <a class="sub_nav answer_success" href=""> 완료된 답변</a>
+      <div class="card">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left">
+              <figure class="image is-48x48">
+                <img
+                  class="is-rounded"
+                  src="https://bulma.io/assets/images/placeholders/96x96.png"
+                  alt="Placeholder image"
+                />
+              </figure>
+            </div>
+            <div class="media-content">
+              <p class="title is-4"><a>다니엘 </a></p>
+              <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+            </div>
           </div>
-          <div class="media-content">
-            <p class="title is-4"><a>John Smith</a></p>
-            <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+
+          <div class="content_">
+            <h1>
+              <p>c언어 포인터</p>
+            </h1>
+
           </div>
-        </div>
-
-        <div class="content_">
-          <h1>
-            <p>c언어 포인터</p>
-          </h1>
-
-        </div>
-        <div class="footer_btn">
-          <a onclick="" class="button is-success login_button"">
+          <div class="footer_btn">
+            <a onclick="" class="button is-link is-light login_button"">
               댓글 &nbsp; <p>1</p>
               </a>
               <a onclick="" class=" button is-success login_button"">
-            나도 궁금해요 &nbsp; <p>1</p>
-          </a>
+              나도 궁금해요 &nbsp; <p>1</p>
+            </a>
+
+          </div>
 
         </div>
       </div>
-    </div>
 
     </div>
     <a onclick="" class="is-success create_answer">

@@ -1,49 +1,80 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="utf-8">
-    <title>main_Login_page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
-    <style>
-      *{
-        /* background-color: azure; */
-      }
-      .logo{
-        margin: 0 auto;
-        padding-bottom: 40px;
-        width: 400px;
-      }
-      .wrap{
-        width :1280px;
-        margin: 0 auto;
-      }
-      .button_login, .acount_button{
-        margin: 0 auto;
-        width :800px;
-      }
-      .home_button{
-        margin: 0 auto;
-        width: 800px;
-      }
-      .login_button{
-        width: 800px;
-        margin: 5px;
-      }
-      .input{
-        height : 60px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
+
+<head>
+  <meta charset="utf-8">
+  <title>main_Login_page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+  crossorigin="anonymous"></script>
+
+  <style>
+    .logo {
+      margin: 0 auto;
+      padding-bottom: 40px;
+      width: 400px;
+    }
+
+    .wrap {
+      width: 1280px;
+      margin: 0 auto;
+    }
+
+    .button_login,
+    .acount_button {
+      margin: 0 auto;
+      width: 800px;
+    }
+
+    .home_button {
+      margin: 0 auto;
+      width: 800px;
+    }
+
+    .login_button {
+      width: 800px;
+      margin: 5px;
+    }
+
+    .input {
+      height: 60px;
+    }
+  </style>
+  <script>
+    var account_id= $('.account_id');
+    var account_pw = $('.account_pw');
+  
+    function login() {
+      $.ajax({
+        type: "POST",
+        url: "/api/login",
+        data: { ID :account_id, PW : account_pw},
+        success: function (response) { // 성공하면
+          if (response['result'] == 'success') {
+            alert(response['안녕']);
+          }else(
+            alert(response['실퍠'])
+          )
+        }
+      })
+    }
+  </script>
+</head>
+
+<body>
+  <div class="wrap">
     <section class="section is-large">
       <div class="logo">
-        <img src = "/static/source/jungdob_logo.png" alt="Logo">
+        <img src="/static/source/jungdob_logo.png" alt="Logo">
       </div>
       <div class="field">
         <p class="control has-icons-left has-icons-right">
-          <input class="input" type="email" placeholder="아이디를 입력해주세요">
+          <input class="input account_id" type="email" placeholder="아이디를 입력해주세요">
           <span class="icon is-small is-left">
             <i class="fas fa-envelope"></i>
           </span>
@@ -54,7 +85,7 @@
       </div>
       <div class="field">
         <p class="control has-icons-left">
-          <input class="input" type="password" placeholder="패스워드를 입력해주세요">
+          <input class="input account_pw" type="password" placeholder="패스워드를 입력해주세요">
           <span class="icon is-small is-left">
             <i class="fas fa-lock"></i>
           </span>
@@ -63,7 +94,7 @@
       <div class="field">
         <div class="home_button">
         <p class="control">
-          <a class="button is-success login_button">
+          <a class="button is-success login_button" onclick = "login()">
             Login
           </a>
         </p>
@@ -76,5 +107,6 @@
       </div>
     </section>
   </div>
-  </body>
+</body>
+
 </html>

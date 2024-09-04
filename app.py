@@ -1,8 +1,9 @@
 from pymongo import MongoClient, ReturnDocument
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
-from flask_login import LoginManager, logout_user, login_user, UserMixin, current_user
+from flask_jwt_extended import *
 from datetime import datetime
 from operator import itemgetter
+
 import re
 
 app = Flask(__name__)
@@ -11,26 +12,16 @@ client = MongoClient('mongodb://root:root@13.125.162.42', 27017)
 #client = MongoClient('localhost', 27017)
 db = client.jungdob
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-class User(UserMixin):
-    def __init__(self, account_id, account_pw, id):
-        self.id = id
-        self.account_id = account_id
-        self.account_pw = account_pw
-
-@login_manager.user_loader
-def load_user(user_id):
-    return session.get(user_id)
-
+jwt = JWTManager(app)
 
 @app.route('/')
+@jwt_required()
 def index():
-    if "id" in session:
-        return render_template("index.html")
-    else:
+    cur_user = get_jwt_identity()
+    if cur_user is None:
         return render_template("main.html")
+    else:
+        return render_template("index.html")
 
 @app.route('/signin')
 def signin():
@@ -77,44 +68,42 @@ def getUserimage():
     picture = open('./static/user_picture/' + user['id'] + '.jpg')
     return jsonify({'result': 'success', 'file': picture})
 
-@app.route('/api/login', methods = ['POST'])
-def login():
-    if request.method == "POST":
-        print("받아옴")
-        id_receive = request.form['user_id']
-        pw_receive = request.form['user_pw']
-
-        result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
-
-        if len(result) == 0:
-            return jsonify({'result' : 'noMatch'})
-        else :
-            return jsonify({'result' : 'success'})
-
-    return jsonify({'result': 'fail'})
+#@app.route('/api/login', methods = ['POST'])
+#def login():
+#    if request.method == "POST":
+#        print("받아옴")
+#        id_receive = request.form['user_id']
+#        pw_receive = request.form['user_pw']
+#
+#        result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
+#
+#        if len(result) == 0:
+#            return jsonify({'result' : 'noMatch'})
+#        else :
+#            return jsonify({'result' : 'success'})
+#
+#    return jsonify({'result': 'fail'})
     
 
 @app.route('/api/signIn', methods=['POST'])
 def signIn2():
-    account_id = request.form['account_id']
-    account_pw = request.form['account_pw']
+    #account_id = request.form['account_id']
+    #account_pw = request.form['account_pw']
+    account_id = request.get_json()['account_id']
+    account_pw = request.get_json()['account_pw']
     account = db.user.find_one({'account_id':account_id})
+    user_id = account["id"]
     if account != None and account['account_pw'] == account_pw:
-        #user = User(account_id, account_pw, account['id'])
-        #login_user(user)
-        print(session)
-        session['account_id'] = account_id
-        session['account_pw'] = account_pw
-        session['id'] = account['id']
-        print(session['account_id'])
-        return jsonify({'result': 'success'})
+        access_token = create_access_token(identity = user_id)
+        return jsonify({'result': 'success', "access_token":access_token})
     else:
         return jsonify({'result': 'fail'})
 
 @app.route('/api/signOut', methods=['GET'])
 def signOut():
-    logout_user()
-    return jsonify({'result': 'success'})
+    response = jsonify({'result': 'success'})
+    unset_jwt_cookies(response)
+    return response
 
 @app.route('/api/signUp', methods=['POST']) #
 def signUp():
@@ -275,9 +264,10 @@ def deleteComment():
         return jsonify({'result': 'success'})
     
 @app.route('/api/pressPostLike', methods=['POST']) #
+@jwt_required()
 def pressPostLike():
     post_id = request.get_json()['post_id']
-    account_id = request.get_json()['account_id']
+    account_id = get_jwt_identity()
     post = db.post.find_one({"id":post_id})
     user_id = db.user.find_one({"account_id":account_id})["id"]
 
@@ -293,9 +283,10 @@ def pressPostLike():
     return jsonify({'result': 'success'})
 
 @app.route('/api/pressCommentLike', methods=['POST']) #
+@jwt_required()
 def pressCommentLike():
     comment_id = request.get_json()['comment_id']
-    account_id = request.get_json()['account_id']
+    account_id = get_jwt_identity()
     comment = db.comment.find_one({"id":comment_id})
     user_id = db.user.find_one({"account_id":account_id})["id"]
     if user_id not in comment['like_user_id_list'] and user_id not in comment['hate_user_id_list']:
@@ -310,9 +301,10 @@ def pressCommentLike():
     return jsonify({'result': 'success'})
 
 @app.route('/api/pressCommentHate', methods=['POST']) #
+@jwt_required()
 def pressCommentHate():
     comment_id = request.get_json()['comment_id']
-    account_id = request.get_json()['account_id']
+    account_id = get_jwt_identity()
     comment = db.comment.find_one({"id":comment_id})
     user_id = db.user.find_one({"account_id":account_id})["id"]
     if user_id not in comment['like_user_id_list'] and user_id not in comment['hate_user_id_list']:
@@ -327,6 +319,8 @@ def pressCommentHate():
     return jsonify({'result': 'success'})
 
 if __name__ == '__main__':
-    app.secret_key = 'secret key'
-    app.config['SESSION_TYPE'] = 'filesystem'
+    app.config.update(
+        DEBUG = True,
+        JWT_SECRET_KEY = "secret key"
+    )
     app.run('0.0.0.0', port=5050, debug=True)

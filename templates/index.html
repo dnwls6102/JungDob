@@ -6,11 +6,10 @@
   <title>main_Login_page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
-  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-latest.min.js"></script> -->
 
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"
   crossorigin="anonymous"></script>
 
   <style>
@@ -46,23 +45,32 @@
     }
   </style>
   <script>
-    var account_id= $('.account_id');
-    var account_pw = $('.account_pw');
-  
+    
+    
     function login() {
+      let account_id= $('#inputID').val()
+      console.log(account_id)
+      let account_pw = $('#inputPW').val()
+      console.log(account_pw)
       $.ajax({
         type: "POST",
         url: "/api/login",
-        data: { ID :account_id, PW : account_pw},
+        data: { user_id : account_id, user_pw : account_pw },
         success: function (response) { // 성공하면
           if (response['result'] == 'success') {
-            alert(response['안녕']);
-          }else(
-            alert(response['실퍠'])
+            location.href = './main'
+          }
+          else if (response['result'] == 'noMatch') {
+            alert("아이디 혹은 비밀번호를 다시 확인하세요.")
+          }
+          else(
+            alert("서버 오류")
           )
         }
       })
     }
+
+    
   </script>
 </head>
 
@@ -74,7 +82,7 @@
       </div>
       <div class="field">
         <p class="control has-icons-left has-icons-right">
-          <input class="input account_id" type="email" placeholder="아이디를 입력해주세요">
+          <input class="input account_id" id="inputID" type="email" placeholder="아이디를 입력해주세요">
           <span class="icon is-small is-left">
             <i class="fas fa-envelope"></i>
           </span>
@@ -85,7 +93,7 @@
       </div>
       <div class="field">
         <p class="control has-icons-left">
-          <input class="input account_pw" type="password" placeholder="패스워드를 입력해주세요">
+          <input class="input account_pw" id = "inputPW" type="password" placeholder="패스워드를 입력해주세요">
           <span class="icon is-small is-left">
             <i class="fas fa-lock"></i>
           </span>

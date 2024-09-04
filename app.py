@@ -5,7 +5,8 @@ from operator import itemgetter
 
 app = Flask(__name__)
 
-client = MongoClient('mongodb://root:root@13.125.162.42', 27017)
+#client = MongoClient('mongodb://root:root@13.125.162.42', 27017)
+client = MongoClient('localhost', 27017)
 db = client.jungdob
 
 @app.route('/')
@@ -59,9 +60,20 @@ def getUserimage():
 
 @app.route('/api/login', methods = ['POST'])
 def login():
-    ID_receive = request.form['ID']
-    pw_receive = request.form['PW']
-    print(ID_receive, pw_receive)
+    if request.method == "POST":
+        print("받아옴")
+        id_receive = request.form['user_id']
+        pw_receive = request.form['user_pw']
+
+        result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
+
+        if len(result) == 0:
+            return jsonify({'result' : 'noMatch'})
+        else :
+            return jsonify({'result' : 'success'})
+
+    return jsonify({'result': 'fail'})
+    
 
 @app.route('/api/signIn', methods=['GET'])
 def signIn():

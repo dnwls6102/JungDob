@@ -91,8 +91,10 @@ def login():
     return jsonify({'result': 'fail'})
     
 
-@app.route('/api/signIn', methods=['POST'])
+@app.route('/api/signIn', methods=['GET', 'POST'])
 def signIn2():
+    if request.method == "GET":
+        return redirect('/main')
     account_id = request.form['account_id']
     account_pw = request.form['account_pw']
     account = db.user.find_one({'account_id':account_id})
@@ -196,9 +198,9 @@ def createPost():
     post['comment_id_list'] = []
     post['time'] = datetime.now().strftime("%Y %m %d %H %M %S %f")
     print(post)
-    tempnum = len(list(db.post.find()))
+    tempnum = db.post.count()
     db.post.insert_one(post)
-    if tempnum != len(list(db.post.find())) :
+    if tempnum != db.post.count() :
          return jsonify({'result': 'success'})
     else :
         return jsonify({'result' : 'fali'})

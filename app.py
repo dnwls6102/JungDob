@@ -58,9 +58,13 @@ def getUserimage():
 
 @app.route('/api/login', methods = ['POST'])
 def login():
-    ID_receive = request.form['ID']
-    pw_receive = request.form['PW']
-    print(ID_receive, pw_receive)
+    if request.method == "POST":
+        print("받아옴")
+        title_receive = request.form['title_give']
+        print(title_receive)
+
+    return jsonify({'result': 'success'})
+    
 
 @app.route('/api/signIn', methods=['GET'])
 def signIn():

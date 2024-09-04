@@ -19,9 +19,9 @@ jwt = JWTManager(app)
 def index():
     cur_user = get_jwt_identity()
     if not cur_user:
-        return render_template("index.html")
-    else:
         return render_template("main.html")
+    else:
+        return render_template("index.html")
 
 @app.route('/signin')
 def signin():

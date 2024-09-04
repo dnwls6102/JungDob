@@ -6,14 +6,21 @@
     <title>회원가입</title>
     <link rel="stylesheet" type="text/css" href="../static/style.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+    crossorigin="anonymous"></script>
+
     <script src="../static/signin.js"></script>
     <style>
         .account_form {
             width: 880px;
         }
-        .singin{
-            
-            float: right;
+        #signin{
+            margin: 5% 42%;
+            /* display: inline; */
+        }
+        .signin_btn{
+            width: 200px;
+            height: 80px;
         }
     </style>
     <script>
@@ -56,31 +63,35 @@
 
             if (account_id.val() == "") {
                 alert("아이디를 입력해주세요.")
+                return false;
             } if (account_pw.val() == "") {
                 alert("패스워드를 입력해주세요.")
+                return false;
             } if (account_pwChack != account_pw) {
                 alert("패스워드가 다릅니다.")
+                return false;
             } if (account_pw.val() == "") {
                 alert("패스워드를 입력해주세요.")
+                return false;
             } if (jungle_class.val() == "") {
                 alert("정글 기수를 체크해주세요")
+                return false;
             } if (slack_id.val() == "") {
                 alert("slack ID를 입력해주세요.")
+                return false;
             }
             $.ajax({
                 type: "POST",
                 url: "/api/signIN",
-                data: { user_id: account_id, user_pw: account_pw, jungle_class },
+                data: { user_id: account_id , user_pw: account_pw, user_class: jungle_class, user_slack: slack_id, user_mbti:jungle_MBTI, user_picture:picture },
                 success: function (response) { // 성공하면
                     if (response['result'] == 'success') {
                         location.href = './main'
                     }
                     else if (response['result'] == 'noMatch') {
-                        alert("아이디 혹은 비밀번호를 다시 확인하세요.")
+        
                     }
-                    else (
-                        alert("서버 오류")
-                    )
+
                 }
             })
 
@@ -107,7 +118,7 @@
         </div>
         <div class="field">
             <span class="has-text-danger">* </span><strong>이름</strong>
-            <input class="input" type="text" id="inputName" placeholder="김정글">
+            <input class="input" type="text" id="inputName" placeholder="">
         </div>
         <div class="field">
             <span class="account_form has-text-danger">* </span><strong>비밀번호</strong>
@@ -154,20 +165,20 @@
                     <label class="file-label">
                         <input class="file-input" type="file" name="resume" onchange="loadFile(this)" />
                         <span class="file-cta">
-                            <span class="file-label">사진 업로드...</span>
+                            <span class="file-label">사진 업로드</span>
                         </span>
                     </label>
                 </div>
             </form>
         </div>
 
-        <div class="field is-grouped">
-            <div class="control ">
-                <button class="button is-success singin">가입하기</button>
+        
+            <div class="control " id="signin">
+                <button class="button is-success signin_btn" onclick="signIn()">가입하기</button>
             </div>
-            <a href = "./" class="is-success create_answer">
+            <!-- <a href = "./" class="is-success create_answer">
                 가입하기
-            </a>
+            </a> -->
 
         </div>
     </div>

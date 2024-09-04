@@ -2,7 +2,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>회원가입</title>
+  <title>정글 : 정글의 답을 찾다</title>
   <link rel="stylesheet" type="text/css" href="../static/style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
   <style>
@@ -96,14 +96,6 @@
 
 <body>
 
-  <head>
-    <meta charset="utf-8">
-    <title>회원가입</title>
-    <link rel="stylesheet" type="text/css" href="../static/style.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
-  </head>
-
-  <body>
     <div class="content wrap">
 
       <a href = "/main">
@@ -132,7 +124,9 @@
 
       <a class="sub_nav answer_stay" href=""> 답변 진행중 /</a>
       <a class="sub_nav answer_success" href=""> 완료된 답변</a>
-      <div class="card">
+      
+      <div class="card" onclick = "location.href = '/post'" style = "cursor:pointer;">
+       
         <div class="card-content">
           <div class="media">
             <div class="media-left">
@@ -167,12 +161,13 @@
           </div>
 
         </div>
+        
       </div>
-
+      
     </div>
-    <a onclick="" class="is-success create_answer">
+    <a href = "./writeQ" class="is-success create_answer">
       질문하기
     </a>
-  </body>
+</body>
 
-  </html>
+</html>

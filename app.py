@@ -20,9 +20,9 @@ class User(UserMixin):
         self.account_id = account_id
         self.account_pw = account_pw
 
-#@login_manager.user_loader
-#def load_user(user_id):
-#    return user_repo.get(user_id)
+@login_manager.user_loader
+def load_user(user_id):
+    return session.get(user_id)
 
 
 @app.route('/')
@@ -96,19 +96,22 @@ def signIn2():
     account_id = request.get_json()['account_id']
     account_pw = request.get_json()['account_pw']
     account = db.user.find_one({'account_id':account_id})
-    print(account, account_pw)
     if account != None and account['account_pw'] == account_pw:
-        user = User(account_id, account_pw, account['id'])
-        login_user(user)
-        print(current_user())
-        return redirect(url_for("/main"))
+        #user = User(account_id, account_pw, account['id'])
+        #login_user(user)
+        print(session)
+        session['account_id'] = account_id
+        session['account_pw'] = account_pw
+        session['id'] = account['id']
+        print(session['id'])
+        return jsonify({'result': 'success'})
     else:
         return jsonify({'result': 'fales'})
 
 @app.route('/api/signOut', methods=['GET'])
 def signOut():
     logout_user()
-    return redirect(url_for('/'))
+    return jsonify({'result': 'success'})
 
 @app.route('/api/signUp', methods=['POST']) #
 def signUp():
@@ -318,4 +321,6 @@ def pressCommentHate():
     return jsonify({'result': 'success'})
 
 if __name__ == '__main__':
+    app.secret_key = 'secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
     app.run('0.0.0.0', port=5050, debug=True)

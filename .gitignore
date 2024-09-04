@@ -167,3 +167,4 @@ cython_debug/
 node_modules/*
 test.html
 static/user_picture/*
+app_copy.py

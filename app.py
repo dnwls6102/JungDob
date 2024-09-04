@@ -112,12 +112,12 @@ def getUserimage():
 
    
 
-    result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
-    if len(result) == 0:
-        return jsonify({'result' : 'noMatch'})
-    else :
-        return jsonify({'result' : 'success'})
-    return jsonify({'result': 'fail'})
+#    result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
+#    if len(result) == 0:
+#        return jsonify({'result' : 'noMatch'})
+#    else :
+#        return jsonify({'result' : 'success'})
+#    return jsonify({'result': 'fail'})
 
 #@app.route('/api/signIn', methods = ['POST'])
 #def idCheck():
@@ -294,6 +294,7 @@ def createPost():
 
 
 @app.route('/api/getCurrentPost', methods=['POST']) #
+@jwt_required()
 def getCurrentPost():
     post_id = request.get_json()['post_id']
     post = db.post.find_one({"id":post_id})
@@ -301,6 +302,7 @@ def getCurrentPost():
     return jsonify({'result': 'success', "post": post})
 
 @app.route('/api/getCommentList', methods=['POST']) #
+@jwt_required()
 def getCommentList():
     post_id = request.get_json()['post_id']
     post = db.post.find_one({"id":post_id})
@@ -314,6 +316,7 @@ def getCommentList():
 
 # input {int post_id, int comment_id}
 @app.route('/api/solveProblem', methods=['POST'])
+@jwt_required()
 def solveProblem():
     post_id = int(request.form['post_id'])
     comment_id = request.form['comment_id']
@@ -338,10 +341,13 @@ def deletePost():
         return jsonify({'result': 'success'})
 
 @app.route('/api/createComment', methods=['POST']) #
+@jwt_required()
 def createComment():
-    comment = request.get_json()
-    post_id = comment['post_id']
+    comment = request.form.to_dict()
+    print(comment)
+    post_id = int(comment['post_id'])
     comment.pop('post_id')
+    comment["author_id"] = get_jwt_identity()
     comment["id"] = getNextSequence("comment")
     comment['like_user_id_list'] = []
     comment['hate_user_id_list'] = []
@@ -373,7 +379,7 @@ def deleteComment():
 @app.route('/api/pressPostLike', methods=['POST']) #
 @jwt_required()
 def pressPostLike():
-    post_id = request.get_json()['post_id']
+    post_id = request.form['post_id']
     account_id = get_jwt_identity()
     post = db.post.find_one({"id":post_id})
     user_id = db.user.find_one({"account_id":account_id})["id"]
@@ -392,38 +398,43 @@ def pressPostLike():
 @app.route('/api/pressCommentLike', methods=['POST']) #
 @jwt_required()
 def pressCommentLike():
-    comment_id = request.get_json()['comment_id']
+    comment_id = int(request.form['comment_id'])
     account_id = get_jwt_identity()
     comment = db.comment.find_one({"id":comment_id})
-    user_id = db.user.find_one({"account_id":account_id})["id"]
-    if user_id not in comment['like_user_id_list'] and user_id not in comment['hate_user_id_list']:
-        comment['like_user_id_list'].append(user_id)
-    elif user_id in comment['like_user_id_list'] and user_id not in comment['hate_user_id_list']:
-        comment['like_user_id_list'].remove(user_id)
-    elif user_id not in comment['like_user_id_list'] and user_id in comment['hate_user_id_list']:
-        comment['like_user_id_list'].append(user_id)
-        comment['hate_user_id_list'].remove(user_id)
+    if account_id not in comment['like_user_id_list'] and account_id not in comment['hate_user_id_list']:
+        comment['like_user_id_list'].append(account_id)
+    elif account_id in comment['like_user_id_list'] and account_id not in comment['hate_user_id_list']:
+        comment['like_user_id_list'].remove(account_id)
+    elif account_id not in comment['like_user_id_list'] and account_id in comment['hate_user_id_list']:
+        comment['like_user_id_list'].append(account_id)
+        comment['hate_user_id_list'].remove(account_id)
     db.comment.delete_one({"id":comment_id})
+    comment.pop("_id")
     db.comment.insert_one(comment)
-    return jsonify({'result': 'success'})
+    like = len(comment['like_user_id_list'])
+    hate = len(comment['hate_user_id_list'])
+    return jsonify({'result': 'success', 'like':like, 'hate':hate})
+    #return jsonify({'result':1})
 
 @app.route('/api/pressCommentHate', methods=['POST']) #
 @jwt_required()
 def pressCommentHate():
-    comment_id = request.get_json()['comment_id']
+    comment_id = int(request.form['comment_id'])
     account_id = get_jwt_identity()
     comment = db.comment.find_one({"id":comment_id})
-    user_id = db.user.find_one({"account_id":account_id})["id"]
-    if user_id not in comment['like_user_id_list'] and user_id not in comment['hate_user_id_list']:
-        comment['hate_user_id_list'].append(user_id)
-    elif user_id not in comment['like_user_id_list'] and user_id in comment['hate_user_id_list']:
-        comment['hate_user_id_list'].remove(user_id)
-    elif user_id in comment['like_user_id_list'] and user_id not in comment['hate_user_id_list']:
-        comment['hate_user_id_list'].append(user_id)
-        comment['like_user_id_list'].remove(user_id)
+    if account_id not in comment['like_user_id_list'] and account_id not in comment['hate_user_id_list']:
+        comment['hate_user_id_list'].append(account_id)
+    elif account_id not in comment['like_user_id_list'] and account_id in comment['hate_user_id_list']:
+        comment['hate_user_id_list'].remove(account_id)
+    elif account_id in comment['like_user_id_list'] and account_id not in comment['hate_user_id_list']:
+        comment['hate_user_id_list'].append(account_id)
+        comment['like_user_id_list'].remove(account_id)
     db.comment.delete_one({"id":comment_id})
+    comment.pop("_id")
     db.comment.insert_one(comment)
-    return jsonify({'result': 'success'})
+    like = len(comment['like_user_id_list'])
+    hate = len(comment['hate_user_id_list'])
+    return jsonify({'result': 'success', 'like':like, 'hate':hate})
 
 if __name__ == '__main__':
     app.config.update(

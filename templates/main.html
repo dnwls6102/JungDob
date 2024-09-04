@@ -129,6 +129,9 @@
       $.ajax({
         type: "POST",
         url: "/api/getPostList",
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+        },
         data: {"week":week, "sorting_method" : sorting_method},
         async:false,
         success: function(response) {
@@ -147,6 +150,9 @@
       $.ajax({
         type: "POST",
         url: "/api/getUserInfo",
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+        },
         data: {"user_id":user_id},
         async:false,
         success: function(response) {
@@ -194,6 +200,9 @@
         type: "POST",
         url: "/api/getCompletePostList",
         data: {"week":week, "sorting_method" : sorting_method},
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+        },
         async:false,
         success: function(response) {
           if(response["result"] == "success") {
@@ -226,6 +235,9 @@
         type: "GET",
         url: "/api/signOut",
         data: {},
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+        },
         async:false,
         success: function(response) {
           if(response["result"] == "success") {
@@ -241,7 +253,7 @@
     function open_post(id) {
         
         let ajaxUrl = "/post?id=" + id
-
+        localStorage.setItem('currentPostId', id);
         $.ajax({
           type: "GET",
           url: ajaxUrl,

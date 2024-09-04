@@ -15,6 +15,75 @@
 
     <script src="../static/post.js"></script>
 
+    <script>
+      function press_like_button(id) {
+        $.ajax({
+          type: "POST",
+          url: "/api/pressCommentLike",
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+          },
+          data: {"comment_id":id},
+          async:false,
+          success: function(response) {
+            if(response["result"] == "success") {
+
+              $(".Lbutton" + id).html("이거다! " + response["like"]);
+              $(".Hbutton" + id).html("안되요 " + response["hate"]);
+            }
+            else {
+              alert("error")
+            }
+          }
+        })
+      }
+      function press_hate_button(id) {
+        $.ajax({
+          type: "POST",
+          url: "/api/pressCommentHate",
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+          },
+          data: {"comment_id":id},
+          async:false,
+          success: function(response) {
+            if(response["result"] == "success") {
+
+              $(".Lbutton" + id).html("이거다! " + response["like"]);
+              $(".Hbutton" + id).html("안되요 " + response["hate"]);
+            }
+            else {
+              alert("error")
+            }
+          }
+        })
+      }
+      function press_comment() {
+        let content = $("#answer_content").val();
+        let post_id = localStorage.getItem('currentPostId');
+        $.ajax({
+          type: "POST",
+          url: "/api/createComment",
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+          },
+          data: {
+            "post_id":post_id,
+            "content":content
+          },
+          async:false,
+          success: function(response) {
+            if(response["result"] == "success") {
+              window.location.reload();
+            }
+            else {
+              alert("error")
+            }
+          }
+        })
+      }
+    </script>
+
   </head>
   
   <body>
@@ -80,13 +149,14 @@
         <div class="control">
           <textarea
             class="textarea has-fixed-size"
+            id = "answer_content"
             placeholder="내가 죽일놈이지 뭐"
           ></textarea>
         </div>
       </div>
 
       <div id="float_right">
-        <button class="button is-success">답변하기</button>
+        <button onclick="press_comment()" class="button is-success" >답변하기</button>
       </div>
       
       {% for i in reply_db %}
@@ -114,7 +184,7 @@
           </div>
         </div>
       </div>
-      <div class = "reply-content" id="{{i['id']}}">
+      <div class = "reply-content">
         <!-- 댓글 작성 시 엔터 누르면 <br>태그가 활성화되게끔 해야될듯 -->
         <p>
           {{i['content']}}
@@ -123,13 +193,13 @@
       <!-- 추비추 버튼 -->
       <div class="field is-grouped reply-osusume reply-block">
         <p class="control">
-          <button class="button is-primary">이거다! {{i['like_num']}}</button>
+          <button onclick="press_like_button(this.id)" class="button is-primary Lbutton{{i['id']}}" id="{{i['id']}}">이거다! {{i['like_num']}}</button>
         </p>
         <p class="control">
-          <button class="button is-link is-light">안돼요 {{i['hate_num']}}</button>
+          <button onclick="press_hate_button(this.id)" class="button is-link is-light Hbutton{{i['id']}}" id="{{i['id']}}">안돼요 {{i['hate_num']}}</button>
         </p>
         <p class="control">
-          <button class="button is-warning is-hovered" id = '{{post['id']}}' onclick = 'select(this.id)'>채택하기</button>
+          <button class="button is-warning is-hovered" id = '{{post["id"]}}' onclick = 'select(this.id)'>채택하기</button>
         </p>
       </div>
       {%endfor%}

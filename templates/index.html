@@ -57,6 +57,8 @@
         async:false,
         success: function (response) { // 성공하면
           if (response['result'] == 'success') {
+            const token = response['access_token'];
+            localStorage.setItem('jwtToken', token);
             location.href = './main'
           }
           else{

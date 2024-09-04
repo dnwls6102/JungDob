@@ -27,7 +27,10 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    if session["id"] == "":
+        return render_template("index.html")
+    else:
+        return render_template("main.html")
 
 @app.route('/signin')
 def signin():
@@ -91,10 +94,8 @@ def login():
     return jsonify({'result': 'fail'})
     
 
-@app.route('/api/signIn', methods=['GET', 'POST'])
+@app.route('/api/signIn', methods=['POST'])
 def signIn2():
-    if request.method == "GET":
-        return redirect('/main')
     account_id = request.form['account_id']
     account_pw = request.form['account_pw']
     account = db.user.find_one({'account_id':account_id})

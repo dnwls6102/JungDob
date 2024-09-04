@@ -1,5 +1,6 @@
-.warp{
+.wrap{
     width: 1280px;
+    margin: 0 auto;
 }
 .top_left_logo {
     width : 300px;
@@ -103,4 +104,8 @@
     border-radius: 20px;
     overflow: hidden;
     margin: 0px 10px 10px 0px;
+}
+
+.singin{
+    float: right;
 }

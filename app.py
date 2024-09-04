@@ -3,6 +3,7 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for, s
 from flask_login import LoginManager, logout_user, login_user, UserMixin, current_user
 from datetime import datetime
 from operator import itemgetter
+import re
 
 app = Flask(__name__)
 
@@ -165,7 +166,24 @@ def getPostList():
 
 @app.route('/api/createPost', methods=['POST']) #
 def createPost():
+    #줄바꿈 문자를 <br>로 바꾸기
     post = request.get_json()
+    tempweek = re.sub(r'[^0-9]', '', post['week'])
+    print("눌러짐")
+    if tempweek == '' :
+        print("기타")
+        post['week'] = -1
+    else :
+        print("숫자")
+        post['week'] = int(tempweek)
+    if post['title'] == '':
+        print("제목없음")
+        return jsonify({'result' : 'noTitle'})
+    if post['content'] == '':
+        print("내용없음")
+        return jsonify({'result' : 'noContent'})
+    #유저 id값은 임시로 쓰레기값 부여
+    post["author_id"] = 1
     post["id"] = getNextSequence("post")
     post['like_num'] = 0
     post['like_user_id_list'] = []
@@ -173,8 +191,12 @@ def createPost():
     post['comment_id_list'] = []
     post['time'] = datetime.now().strftime("%Y %m %d %H %M %S %f")
     print(post)
+    tempnum = db.post.count()
     db.post.insert_one(post)
-    return jsonify({'result': 'success'})
+    if tempnum != db.post.count() :
+         return jsonify({'result': 'success'})
+    else :
+        return jsonify({'result' : 'fali'})
 
 
 @app.route('/api/getCurrentPost', methods=['POST']) #

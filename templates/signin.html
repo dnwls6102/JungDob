@@ -14,6 +14,46 @@
                 width: 880px;
             }
         </style>
+          <script>
+            function id_DuplicateCheck() {
+            let account_id= $('#inputID').val()
+            console.log(account_id)
+            $.ajax({
+                type: "POST",
+                url: "/api/signIn",
+                data: {user_id : account_id},
+                success: function (response) { // 성공하면
+                if (response['result'] == 'success') {
+                    alert("사용하셔도 좋습니다.")
+                }
+                else if (response['result'] == 'noMatch') {
+                    alert("중복되는 아이디 입니다.")
+                }
+                else(
+                    alert("서버 오류")
+                )
+                }
+            })
+            }
+
+            function signIn(){
+            let account_id= $('#inputID').val()
+            console.log(account_id)
+            let account_pw= $('#inputPW').val()
+            console.log(account_pw)
+            let account_pwChack= $('#inputPWCheck').val()
+            console.log(account_pwChack)
+            let jungle_class = $('#jungle_class').val()
+            console.log(jungle_class)
+            let slack_id = $('#slack_id').val()
+            console.log(slack_id)
+            let jungle_MBTI= $('#mbti').val()
+            console.log(jungle_MBTI)
+            let picture= $('picture').val()
+            console.log(picture)
+            }
+            
+          </script>
     </head>
     <body>
         <div class = "content wrap">
@@ -24,31 +64,31 @@
             <p>정글러님의 정보를 기입해주세요</p>
             <span class="has-text-danger">* </span><strong>아이디</strong>
             <div class="field has-addons">
-                <div class="account_form  control">
-                    <input class="input" type="text">
+                <div class="account_form  control account_id">
+                    <input class="input" type="text" id="inputID">
                 </div>
                 <div class="control">
-                    <button class = "button is-success">중복 확인</button>
+                    <button class = "button is-success" id="#inputID" onclick="id_DuplicateCheck()">중복 확인</button>
                 </div>
             </div>
             <div class = "field">
                 <span class="has-text-danger">* </span><strong>이름</strong>
-                <input class="input" type = "text" placeholder="김정글">
+                <input class="input" type = "text" id="inputName"placeholder="김정글">
             </div>
             <div class="field">
                 <span class="account_form has-text-danger">* </span><strong>비밀번호</strong>
-                <input class="input" type="password">
+                <input class="input" type="password" id="inputPW">
             </div>
             <div class="field">
                 <span class="account_form has-text-danger">* </span><strong>비밀번호 확인</strong>
-                <input class="input" type="password" />
+                <input class="input" type="password" id="inputPwCheck"/>
                 <!-- 여기에 비밀번호 같은지 다른지 여부를 검사하는 jinja2 template -->
             </div>
 
             <div class="field">
                 <span class="has-text-danger">* </span><strong>정글 기수</strong>
                 <div class="control">
-                    <div class="select">
+                    <div class="select" id ="">
                         <select>
                             <option disabled hidden selected></option>
                             <option>7기</option>

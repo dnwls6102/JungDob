@@ -177,25 +177,27 @@
               </figure>
             </div>
             <div class="media-content">
+              {%for x in users if not (i['author_id'] != x['id'])%}
               <p class="title is-4"><a>
-                {{name}}
+                {{x['user_name']}}
               </a></p>
+              {%endfor%}
               <time datetime="2016-1-1">{{i['time']}}</time>
             </div>
           </div>
 
           <div class="content_" onclick = "location.href = '/post'" style = "cursor:pointer;">
             <h1>
-              <p>c언어 포인터</p>
+              <p>{{i['title']}}</p>
             </h1>
 
           </div>
           <div class="footer_btn">
-            <a onclick="" class="button is-link is-light login_button"">
-              댓글 &nbsp; <p>1</p>
+            <a onclick="" class="button is-link is-light login_button">
+              댓글 &nbsp; <p>{{i['reply_num']}}</p>
               </a>
-              <a onclick="" class=" button is-success login_button"">
-              나도 궁금해요 &nbsp; <p>1</p>
+              <a onclick="" class=" button is-success login_button">
+              나도 궁금해요 &nbsp; <p>{{i['like_num']}}</p>
             </a>
 
           </div>

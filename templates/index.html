@@ -52,8 +52,8 @@
       console.log(account_pw)
       $.ajax({
         type: "POST",
-        url: "/api/login",
-        data: { user_id : account_id, user_pw : account_pw },
+        url: "/api/signIn",
+        data: { account_id : account_id, account_pw : account_pw },
         success: function (response) { // 성공하면
           if (response['result'] == 'success') {
             location.href = './main'

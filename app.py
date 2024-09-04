@@ -22,7 +22,11 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
+<<<<<<< HEAD
     return session.get(user_id)
+=======
+    return user_id
+>>>>>>> 172e4956c50ccb7dc606d7533874ef510c57142c
 
 
 @app.route('/')
@@ -93,10 +97,11 @@ def login():
 
 @app.route('/api/signIn', methods=['POST'])
 def signIn2():
-    account_id = request.get_json()['account_id']
-    account_pw = request.get_json()['account_pw']
+    account_id = request.form['account_id']
+    account_pw = request.form['account_pw']
     account = db.user.find_one({'account_id':account_id})
     if account != None and account['account_pw'] == account_pw:
+<<<<<<< HEAD
         #user = User(account_id, account_pw, account['id'])
         #login_user(user)
         print(session)
@@ -105,8 +110,14 @@ def signIn2():
         session['id'] = account['id']
         print(session['id'])
         return jsonify({'result': 'success'})
+=======
+        user = User(account_id, account_pw, account['id'])
+        login_user(user)
+        print(current_user())
+        return jsonify({'result' : 'success'})
+>>>>>>> 172e4956c50ccb7dc606d7533874ef510c57142c
     else:
-        return jsonify({'result': 'fales'})
+        return jsonify({'result': 'fail'})
 
 @app.route('/api/signOut', methods=['GET'])
 def signOut():
@@ -169,23 +180,26 @@ def getPostList():
 
 @app.route('/api/createPost', methods=['POST']) #
 def createPost():
-    #줄바꿈 문자를 <br>로 바꾸기
-    post = request.get_json()
-    tempweek = re.sub(r'[^0-9]', '', post['week'])
     print("눌러짐")
+    #줄바꿈 문자를 <br>로 바꾸기
+    post = dict()
+    tempweek = re.sub(r'[^0-9]', '', request.form['week'])
+    print("변환됨")
     if tempweek == '' :
         print("기타")
         post['week'] = -1
     else :
         print("숫자")
         post['week'] = int(tempweek)
-    if post['title'] == '':
+    if request.form['title'] == '':
         print("제목없음")
         return jsonify({'result' : 'noTitle'})
-    if post['content'] == '':
+    if request.form['content'] == '':
         print("내용없음")
         return jsonify({'result' : 'noContent'})
     #유저 id값은 임시로 쓰레기값 부여
+    post['title'] = request.form['title']
+    post['content'] = request.form['content']
     post["author_id"] = 1
     post["id"] = getNextSequence("post")
     post['like_num'] = 0

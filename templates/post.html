@@ -13,6 +13,8 @@
     crossorigin="anonymous"
     ></script>
 
+    <script src="../static/post.js"></script>
+
   </head>
   
   <body>
@@ -112,7 +114,7 @@
           </div>
         </div>
       </div>
-      <div class = "reply-content">
+      <div class = "reply-content" id="{{i['id']}}">
         <!-- 댓글 작성 시 엔터 누르면 <br>태그가 활성화되게끔 해야될듯 -->
         <p>
           {{i['content']}}
@@ -125,6 +127,9 @@
         </p>
         <p class="control">
           <button class="button is-link is-light">안돼요 {{i['hate_num']}}</button>
+        </p>
+        <p class="control">
+          <button class="button is-warning is-hovered" id = '{{post['id']}}' onclick = 'select(this.id)'>채택하기</button>
         </p>
       </div>
       {%endfor%}

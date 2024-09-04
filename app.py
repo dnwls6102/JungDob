@@ -45,6 +45,7 @@ def writeQ():
 @app.route('/post', methods=['GET'])
 def post():
     id_receive = request.args.get('id')
+    print(id_receive)
     post = list(db.post.find({'id' : int(id_receive)}))
     post = post[0]
     authorInfo = list(db.user.find({'id' : post['author_id']}))[0]
@@ -241,6 +242,17 @@ def getCompletePostList():
 #    ret = db.post.find({"$and": [{"author_id":user_id}, {"week", week}]}).sort({"like_num":-1})
 #return jsonify({'result': 'success'}, {'list': ret})
 
+@app.route('/api/select', methods = ["POST"])
+@jwt_required()
+def select():
+    id = request.form['post_id']
+    reply_id = request.form['reply_id']
+    temp_num = len(list(db.post.find({})))
+    db.post.update_one({'id' : int(id)}, {"$set" : {"solved_comment_id" : int(reply_id)}})
+    if temp_num != len(list(db.post.find({}))):
+        return jsonify({'result' : 'success'})
+    else :
+        return jsonify({'result' : 'fail'})
 
 @app.route('/api/createPost', methods=['POST']) #
 @jwt_required()

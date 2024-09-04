@@ -28,6 +28,12 @@ jwt = JWTManager(app)
 def index():
     return render_template("index.html")
 
+#    cur_user = get_jwt_identity()
+#    if not cur_user:
+#        return redirect(url_for('main'))
+#    else:
+#        return render_template("index.html")
+
 @app.route('/signin')
 def signin():
     return render_template("signin.html")
@@ -36,13 +42,51 @@ def signin():
 def writeQ():
     return render_template("writeQ.html")
 
-@app.route('/post')
+@app.route('/post', methods=['GET'])
 def post():
-    return render_template("post.html")
+    id_receive = request.args.get('id')
+    post = list(db.post.find({'id' : int(id_receive)}))
+    post = post[0]
+    authorInfo = list(db.user.find({'id' : post['author_id']}))[0]
+    userdb = list(db.user.find({}))
+    reply_db = []
+    reply_users_db = []
+    for i in post['comment_id_list']:
+        for x in list(db.comment.find({})):
+            like_num = 0
+            hate_num = 0
+            if x['id'] == i :
+                for t in x['like_user_id_list']:
+                    like_num += 1
+                for h in x['hate_user_id_list']:
+                    hate_num += 1
+                x['like_num'] = like_num
+                x['hate_num'] = hate_num
+                reply_db.append(x)
+        for u in userdb :
+            if u['id'] == i :
+                reply_users_db.append(u)
+    temp_reply_num = 0
+    print(reply_users_db)
+    for i in post['comment_id_list']:
+        temp_reply_num += 1
+    
+    return render_template("post.html", post = post, authorInfo = authorInfo, reply_num = temp_reply_num,
+                           reply_db = reply_db, reply_users_db = reply_users_db)
 
 @app.route('/main')
 def main():
-    return render_template("main.html")
+    ret = sorted(list(db.post.find({})), key=itemgetter('time'), reverse=True)
+    users = list(db.user.find({}))
+    for _post in ret:
+        _post.pop('_id')
+    for x in ret:
+        temp_reply_num = 0
+        print(x)
+        for z in x['comment_id_list'] :
+            temp_reply_num += 1
+        x['reply_num'] = temp_reply_num
+    return render_template("main.html", posts = ret, users = users, name = 'Null')
 
 
 # API
@@ -65,22 +109,27 @@ def getUserimage():
     picture = open('./static/user_picture/' + user['id'] + '.jpg')
     return jsonify({'result': 'success', 'file': picture})
 
-#@app.route('/api/login', methods = ['POST'])
-#def login():
-#    if request.method == "POST":
-#        print("받아옴")
-#        id_receive = request.form['user_id']
-#        pw_receive = request.form['user_pw']
-#
-#        result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
-#
-#        if len(result) == 0:
-#            return jsonify({'result' : 'noMatch'})
-#        else :
-#            return jsonify({'result' : 'success'})
-#
-#    return jsonify({'result': 'fail'})
-    
+   
+
+    result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
+    if len(result) == 0:
+        return jsonify({'result' : 'noMatch'})
+    else :
+        return jsonify({'result' : 'success'})
+    return jsonify({'result': 'fail'})
+
+@app.route('/api/signIn', methods = ['POST'])
+def idCheck():
+    if request.method == "POST":
+        print("받아옴")
+        id_receive = request.form['user_id']
+        print(id_receive)
+        result = list(db.user.find({'account_id' : id_receive}))
+        print(result)
+        if len(result) == 0:
+            return jsonify({'result' : 'success'})
+        else :
+            return jsonify({'result' : 'noMatch'})
 
 @app.route('/api/signIn', methods=['POST'])
 def signIn2():
@@ -103,13 +152,33 @@ def signOut():
 @app.route('/api/signUp', methods=['POST']) #
 def signUp():
     print("signUp")
-    user = request.get_json()
-    #image = request.file['image']
+    
+    account_id= request.form['account_id']
+    account_pw = request.form['account_pw']
+    user_name=request.form['user_name']
+    account_class= request.form['jungle_class']
+    slack_id= request.form['slack_id']
+    user_mbti= request.form['user_MBTI']
+    picture=request.form['picture']
+    
+    user ={
+        'account_id': account_id, 'account_pw' : account_pw,
+        'user_name':user_name,'MBTI':user_mbti,
+        'jungle_class':account_class,
+        'slack_id':slack_id,
+        'picture':picture
+    }
     user["id"] = getNextSequence("user")
+    db.user.insert_one(user)
+
+    # user = request.get_json()
+    #image = request.file['image']
+
     #extension = image.filename.split('.')[1]
     #user['image'] = user['id'] + '.' + extension
     print(user)
-    db.user.insert_one(user)
+    
+
     #image.save('./static/user_iamge/' + user['image'])
     return jsonify({'result': 'success'})
 
@@ -203,9 +272,9 @@ def createPost():
     post['comment_id_list'] = []
     post['time'] = datetime.now().strftime("%Y %m %d %H %M %S %f")
     print(post)
-    tempnum = db.post.count()
+    tempnum = len(list(db.post.find()))
     db.post.insert_one(post)
-    if tempnum != db.post.count() :
+    if tempnum != len(list(db.post.find())) :
          return jsonify({'result': 'success'})
     else :
         return jsonify({'result' : 'fali'})

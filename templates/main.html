@@ -17,7 +17,7 @@
     .wrap {
       width: 1280px;
       height: 1280px;
-      margin: 0 auto;
+      /* margin: 0 auto; */
     }
 
     input {
@@ -220,10 +220,20 @@
       show_post_list(get_complete_post_list(week, true));
     }
 
-    function kensaku() {
-      week = $('#week_input').val();
-      get_post_list();
+    function open_post(id) {
+        
+        let ajaxUrl = "/post?id=" + id
+
+        $.ajax({
+          type: "GET",
+          url: ajaxUrl,
+          data: {},
+          success: function(response){
+              location.href = ajaxUrl
+          }
+        })
     }
+
     function openClose() {
       // id 값 post-box의 display 값이 block 이면(= 눈에 보이면)
       if ($("#post-box").css("display") == "block") {
@@ -277,9 +287,50 @@
       <a onclick="in_progress_qes()" class="sub_nav answer_stay"> 답변 진행중 /</a>
       <a onclick="complete_qes()" class="sub_nav answer_success"> 완료된 답변</a>
       
+      {% for i in posts %}
       <div class="card">
+       
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left">
+              <figure class="image is-48x48">
+                <img
+                  class="is-rounded"
+                  src="https://bulma.io/assets/images/placeholders/96x96.png"
+                  alt="Placeholder image"
+                />
+              </figure>
+            </div>
+            <div class="media-content">
+              {%for x in users if not (i['author_id'] != x['id'])%}
+              <p class="title is-4"><a>
+                {{x['user_name']}}
+              </a></p>
+              {%endfor%}
+              <time datetime="2016-1-1">{{i['time']}}</time>
+            </div>
+          </div>
 
+          <div class="content_" onclick = "open_post(this.id)" style = "cursor:pointer;" id={{i['id']}}>
+            <h1>
+              <p>{{i['title']}}</p>
+            </h1>
+
+          </div>
+          <div class="footer_btn">
+            <a onclick="" class="button is-link is-light login_button">
+              댓글 &nbsp; <p>{{i['reply_num']}}</p>
+              </a>
+              <a onclick="" class=" button is-success login_button">
+              나도 궁금해요 &nbsp; <p>{{i['like_num']}}</p>
+            </a>
+
+          </div>
+
+        </div>
+        
       </div>
+      {%endfor%}
       
     </div>
     <a href = "./writeQ" class="is-success create_answer">

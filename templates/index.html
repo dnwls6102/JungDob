@@ -56,7 +56,7 @@
         data: { user_id : account_id, user_pw : account_pw },
         success: function (response) { // 성공하면
           if (response['result'] == 'success') {
-            console.log(response)
+            location.href = './main'
           }
           else if (response['result'] == 'noMatch') {
             alert("아이디 혹은 비밀번호를 다시 확인하세요.")

@@ -76,10 +76,9 @@ def login():
     
 
 @app.route('/api/signIn', methods=['GET'])
-def signin():
+def signIn():
     if request.method == "POST":
-    print("들어왔음")    
-    id_r
+        print("들어왔음")    
 
     return jsonify({'result': 'success'})
 

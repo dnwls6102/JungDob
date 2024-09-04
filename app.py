@@ -147,7 +147,8 @@ def checkIDUsed():
 def getPostList():
     week = request.form['week']
     print(week)
-    sorting_method = request.get_json()['sorting_method']
+    #week이 99일 경우 전체 목록 불러오기
+    sorting_method = request.form['sorting_method']
     if sorting_method == "time":
         #ret = list(db.post.find({"week": week}))
         ret = sorted(list(db.post.find({"week": week})), key=itemgetter('time'), reverse=True)

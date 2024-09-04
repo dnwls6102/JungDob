@@ -5,6 +5,10 @@
   <title>정글 : 정글의 답을 찾다</title>
   <link rel="stylesheet" type="text/css" href="../static/style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+  crossorigin="anonymous"></script>
+
   <style>
     a {
       text-decoration: none;
@@ -77,6 +81,34 @@
     }
   </style>
   <script>
+    let week = 99;
+    function get_post_list() {
+      let sorting_method = $('#sorting option:selected').val();
+      if (sorting_method == '추천순') {
+        sorting_method = 'like'
+      }
+      else {
+        sorting_method = 'time'
+      }
+      
+      $.ajax({
+        type: "POST",
+        url: "/api/getPostList",
+        data: {week : week, sorting_method : sorting_method},
+        success: function(response) {
+          if(response["result"] == "success") {
+            
+          }
+          else {
+            alert("서버 오류로 글 목록을 불러오지 못했습니다")
+          }
+        }
+      })
+    }
+    function kensaku() {
+      week = $('#week_input').val();
+      get_post_list();
+    }
     function openClose() {
       // id 값 post-box의 display 값이 block 이면(= 눈에 보이면)
       if ($("#post-box").css("display") == "block") {
@@ -108,7 +140,7 @@
         </div>
       </div>
       <div>
-        <input type='text' placeholder='주차를 입력하세요' class='bottom-border' />
+        <input type='text' placeholder='주차를 입력하세요' class='bottom-border' id = "week_input" />
         <p class="week_searching">주차 프로젝트</p>
         <a onclick="" class="button is-success login_button">
           검색
@@ -117,10 +149,9 @@
           <label class="label"></label>
           <div class="control">
             <div class="select">
-              <select>
+              <select id="sorting">
                 <option>추천순</option>
-                <option>좋아요 순</option>
-                <option>댓글순</option>
+                <option>최신순</option>
               </select>
             </div>
           </div>

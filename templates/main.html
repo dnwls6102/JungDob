@@ -221,6 +221,22 @@
         week = 0;
       show_post_list(get_complete_post_list(week, true));
     }
+    function press_logout() {
+      $.ajax({
+        type: "GET",
+        url: "/api/signOut",
+        data: {},
+        async:false,
+        success: function(response) {
+          if(response["result"] == "success") {
+            window.location.replace("/");
+          }
+          else {
+            alert("error")
+          }
+        }
+      })
+    }
 
     function open_post(id) {
         
@@ -263,7 +279,7 @@
           <img class="top_left_logo" src="/static/source/jungdob_logo.png" />
         </a>
         <div class="logout">
-          <button class="button is-success is-rounded">로그아웃</button>
+          <button class="button is-success is-rounded" onclick="press_logout()">로그아웃</button>
         </div>
       </div>
       <div>

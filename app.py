@@ -118,18 +118,18 @@ def getUserimage():
         return jsonify({'result' : 'success'})
     return jsonify({'result': 'fail'})
 
-@app.route('/api/signIn', methods = ['POST'])
-def idCheck():
-    if request.method == "POST":
-        print("받아옴")
-        id_receive = request.form['user_id']
-        print(id_receive)
-        result = list(db.user.find({'account_id' : id_receive}))
-        print(result)
-        if len(result) == 0:
-            return jsonify({'result' : 'success'})
-        else :
-            return jsonify({'result' : 'noMatch'})
+#@app.route('/api/signIn', methods = ['POST'])
+#def idCheck():
+#    if request.method == "POST":
+#        print("받아옴")
+#        id_receive = request.form['user_id']
+#        print(id_receive)
+#        result = list(db.user.find({'account_id' : id_receive}))
+#        print(result)
+#        if len(result) == 0:
+#            return jsonify({'result' : 'success'})
+#        else :
+#            return jsonify({'result' : 'noMatch'})
 
 @app.route('/api/signIn', methods=['POST'])
 def signIn2():
@@ -148,6 +148,7 @@ def signOut():
     response = jsonify({'result': 'success'})
     unset_jwt_cookies(response)
     return response
+
 
 @app.route('/api/signUp', methods=['POST']) #
 def signUp():

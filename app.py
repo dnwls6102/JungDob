@@ -15,13 +15,13 @@ db = client.jungdob
 jwt = JWTManager(app)
 
 @app.route('/')
-@jwt_required()
+@jwt_required(optional=True)
 def index():
     cur_user = get_jwt_identity()
-    if cur_user is None:
-        return render_template("main.html")
-    else:
+    if not cur_user:
         return render_template("index.html")
+    else:
+        return render_template("main.html")
 
 @app.route('/signin')
 def signin():
@@ -87,10 +87,8 @@ def getUserimage():
 
 @app.route('/api/signIn', methods=['POST'])
 def signIn2():
-    #account_id = request.form['account_id']
-    #account_pw = request.form['account_pw']
-    account_id = request.get_json()['account_id']
-    account_pw = request.get_json()['account_pw']
+    account_id = request.form['account_id']
+    account_pw = request.form['account_pw']
     account = db.user.find_one({'account_id':account_id})
     user_id = account["id"]
     if account != None and account['account_pw'] == account_pw:

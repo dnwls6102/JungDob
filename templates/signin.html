@@ -1,140 +1,178 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset = "utf-8">
-        <title>회원가입</title>
-        <link rel = "stylesheet" type="text/css" href="../static/style.css"/>
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
-        >
-        <script src = "../static/signin.js"></script>
-        <style>
-            .account_form {
-                width: 880px;
-            }
-        </style>
-          <script>
-            function id_DuplicateCheck() {
-            let account_id= $('#inputID').val()
+
+<head>
+    <meta charset="utf-8">
+    <title>회원가입</title>
+    <link rel="stylesheet" type="text/css" href="../static/style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <script src="../static/signin.js"></script>
+    <style>
+        .account_form {
+            width: 880px;
+        }
+        .singin{
+            
+            float: right;
+        }
+    </style>
+    <script>
+        function id_DuplicateCheck() {
+            let account_id = $('#inputID').val()
             console.log(account_id)
             $.ajax({
                 type: "POST",
                 url: "/api/signIn",
-                data: {user_id : account_id},
+                data: { user_id: account_id },
                 success: function (response) { // 성공하면
-                if (response['result'] == 'success') {
-                    alert("사용하셔도 좋습니다.")
-                }
-                else if (response['result'] == 'noMatch') {
-                    alert("중복되는 아이디 입니다.")
-                }
-                else(
-                    alert("서버 오류")
-                )
+                    if (response['result'] == 'success') {
+                        alert("사용하셔도 좋습니다.")
+                    }
+                    else if (response['result'] == 'noMatch') {
+                        alert("중복되는 아이디 입니다.")
+                    }
+                    else (
+                        alert("서버 오류")
+                    )
                 }
             })
-            }
+        }
 
-            function signIn(){
-            let account_id= $('#inputID').val()
+        function signIn() {
+            let account_id = $('#inputID').val()
             console.log(account_id)
-            let account_pw= $('#inputPW').val()
+            let account_pw = $('#inputPW').val()
             console.log(account_pw)
-            let account_pwChack= $('#inputPWCheck').val()
+            let account_pwChack = $('#inputPWCheck').val()
             console.log(account_pwChack)
-            let jungle_class = $('#jungle_class').val()
+            let jungle_class = $('#jungle_class option:select').val()
             console.log(jungle_class)
             let slack_id = $('#slack_id').val()
             console.log(slack_id)
-            let jungle_MBTI= $('#mbti').val()
+            let jungle_MBTI = $('#mbti').val()
             console.log(jungle_MBTI)
-            let picture= $('picture').val()
+            let picture = $('picture').val()
             console.log(picture)
+
+            if (account_id.val() == "") {
+                alert("아이디를 입력해주세요.")
+            } if (account_pw.val() == "") {
+                alert("패스워드를 입력해주세요.")
+            } if (account_pwChack != account_pw) {
+                alert("패스워드가 다릅니다.")
+            } if (account_pw.val() == "") {
+                alert("패스워드를 입력해주세요.")
+            } if (jungle_class.val() == "") {
+                alert("정글 기수를 체크해주세요")
+            } if (slack_id.val() == "") {
+                alert("slack ID를 입력해주세요.")
             }
-            
-          </script>
-    </head>
-    <body>
-        <div class = "content wrap">
-            <a href = "/">
-                <img class = "top_left_logo" src = "/static/source/jungdob_logo.png"/>
-            </a>
-            <h1>회원가입</h1>
-            <p>정글러님의 정보를 기입해주세요</p>
-            <span class="has-text-danger">* </span><strong>아이디</strong>
-            <div class="field has-addons">
-                <div class="account_form  control account_id">
-                    <input class="input" type="text" id="inputID">
-                </div>
-                <div class="control">
-                    <button class = "button is-success" id="#inputID" onclick="id_DuplicateCheck()">중복 확인</button>
-                </div>
-            </div>
-            <div class = "field">
-                <span class="has-text-danger">* </span><strong>이름</strong>
-                <input class="input" type = "text" id="inputName"placeholder="김정글">
-            </div>
-            <div class="field">
-                <span class="account_form has-text-danger">* </span><strong>비밀번호</strong>
-                <input class="input" type="password" id="inputPW">
-            </div>
-            <div class="field">
-                <span class="account_form has-text-danger">* </span><strong>비밀번호 확인</strong>
-                <input class="input" type="password" id="inputPwCheck"/>
-                <!-- 여기에 비밀번호 같은지 다른지 여부를 검사하는 jinja2 template -->
-            </div>
+            $.ajax({
+                type: "POST",
+                url: "/api/signIN",
+                data: { user_id: account_id, user_pw: account_pw, jungle_class },
+                success: function (response) { // 성공하면
+                    if (response['result'] == 'success') {
+                        location.href = './main'
+                    }
+                    else if (response['result'] == 'noMatch') {
+                        alert("아이디 혹은 비밀번호를 다시 확인하세요.")
+                    }
+                    else (
+                        alert("서버 오류")
+                    )
+                }
+            })
 
-            <div class="field">
-                <span class="has-text-danger">* </span><strong>정글 기수</strong>
-                <div class="control">
-                    <div class="select" id ="">
-                        <select>
-                            <option disabled hidden selected></option>
-                            <option>7기</option>
-                            <option>6기</option>
-                            <option>5기</option>
-                            <option>4기</option>
-                            <option>3기</option>
-                            <option>2기</option>
-                            <option>1기</option>
-                        </select>
-                    </div>
-                </div>
+        }
+
+    </script>
+</head>
+
+<body>
+    <div class="content wrap">
+        <a href="/">
+            <img class="top_left_logo" src="/static/source/jungdob_logo.png" />
+        </a>
+        <h1>회원가입</h1>
+        <p>정글러님의 정보를 기입해주세요</p>
+        <span class="has-text-danger">* </span><strong>아이디</strong>
+        <div class="field has-addons">
+            <div class="account_form  control account_id">
+                <input class="input" type="text" id="inputID">
             </div>
-          
-                <div class="field">
-                    <span class="account_form has-text-danger">* </span><strong>Slack ID</strong>
-                    <input class="input" type="text" placeholder="필요가 있나?"/>
-                </div>
-          
-                <div class="field">
-                    <label class="label">MBTI(추후 이벤트 참여에 도움이 됩니다)</label>
-                    <input class="input" type="text" placeholder="ENFP"/>
-                </div>
-                <div class = "field">
-                    <label class="label">프로필 사진</label>
-                    <form class="inputImg" method="post" enctype="multipart/form-data">
-                        <div class="addImage" id="image-show"></div>
-                        <div class="file is-success">
-                            <label class="file-label">
-                              <input class="file-input" type="file" name="resume" onchange = "loadFile(this)"/>
-                              <span class="file-cta">
-                                <span class="file-label">사진 업로드...</span>
-                              </span>
-                            </label>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="field is-grouped">
-                    <div class="control">
-                    <button class="button is-success">가입하기</button>
-                </div>
-
+            <div class="control">
+                <button class="button is-success" id="#inputID" onclick="id_DuplicateCheck()">중복 확인</button>
             </div>
         </div>
-    
-    
-    </body>
+        <div class="field">
+            <span class="has-text-danger">* </span><strong>이름</strong>
+            <input class="input" type="text" id="inputName" placeholder="김정글">
+        </div>
+        <div class="field">
+            <span class="account_form has-text-danger">* </span><strong>비밀번호</strong>
+            <input class="input" type="password" id="inputPW">
+        </div>
+        <div class="field">
+            <span class="account_form has-text-danger">* </span><strong>비밀번호 확인</strong>
+            <input class="input" type="password" id="inputPwCheck" />
+            <!-- 여기에 비밀번호 같은지 다른지 여부를 검사하는 jinja2 template -->
+        </div>
+
+        <div class="field">
+            <span class="has-text-danger">* </span><strong>정글 기수</strong>
+            <div class="control">
+                <div class="select" id="">
+                    <select>
+                        <option disabled hidden selected></option>
+                        <option>7기</option>
+                        <option>6기</option>
+                        <option>5기</option>
+                        <option>4기</option>
+                        <option>3기</option>
+                        <option>2기</option>
+                        <option>1기</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <span class="account_form has-text-danger">* </span><strong>Slack ID</strong>
+            <input class="input" type="text" placeholder="필요가 있나?" />
+        </div>
+
+        <div class="field">
+            <label class="label">MBTI(추후 이벤트 참여에 도움이 됩니다)</label>
+            <input class="input" type="text" placeholder="ENFP" />
+        </div>
+        <div class="field">
+            <label class="label">프로필 사진</label>
+            <form class="inputImg" method="post" enctype="multipart/form-data">
+                <div class="addImage" id="image-show"></div>
+                <div class="file is-success">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="resume" onchange="loadFile(this)" />
+                        <span class="file-cta">
+                            <span class="file-label">사진 업로드...</span>
+                        </span>
+                    </label>
+                </div>
+            </form>
+        </div>
+
+        <div class="field is-grouped">
+            <div class="control ">
+                <button class="button is-success singin">가입하기</button>
+            </div>
+            <a href = "./" class="is-success create_answer">
+                가입하기
+            </a>
+
+        </div>
+    </div>
+
+
+</body>
+
 </html>

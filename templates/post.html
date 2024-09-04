@@ -11,31 +11,28 @@
   <script src="../static/post.js"></script>
 
   <script>
-    function creat_comment() {
-      console.log(1)
+    function comment() {
       let comment = $('#comment').val()
       console.log(comment)
-      console.log(1)
-      // console.log(comment)
-      // $.ajax({
-      //   type: "POST",
-      //   url: "/api/createComment",
-      //   data: { post_id: comment },
-      //   success: function (response) { // 성공하면
-      //     if (response['result'] == 'success') {
-      //       alert("댓글이 등록되었습니다.")
-      //     }
-      //     else if (response['result'] == 'noMatch') {
-      //       alert("댓글을 입력해주세요.")
-      //       $('#inputID').val("")
-      //     }
-      //     else (
-      //       alert("서버 오류")
-      //     )
-      //   }
-      // })
+      $.ajax({
+          type: "POST",
+          url: "/api/createComment",
+          data: { title: title, content: content, week: week },
+          success: function (response) {
+            if (response["result"] == "success") {
+              alert("업로드 완료");
+              location.replace("/main");
+            } else if (response["result"] == "noTitle") {
+              alert("제목을 입력하세요!");
+            } else if (response["result"] == "noContent") {
+              alert("내용을 입력하세요!");
+            } else alert("서버 오류");
+          },
+        });
+
     }
   </script>
+
 
 </head>
 
@@ -104,7 +101,8 @@
     </div>
 
     <div id="float_right">
-      <button class="button is-success" onclick="creat_comment()">답변하기</button>
+      <!-- <button class="button is-success" onclick="creat_comment()">답변하기</button> -->
+      <button class="button is-success" onclick="comment()">답변하기</button>
     </div>
 
     {% for i in reply_db %}

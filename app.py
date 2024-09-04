@@ -138,6 +138,7 @@ def getPostList():
 
 @app.route('/api/createPost', methods=['POST']) #
 def createPost():
+    #줄바꿈 문자를 <br>로 바꾸기
     post = request.get_json()
     post["id"] = getNextSequence("post")
     post['like_num'] = 0

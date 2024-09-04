@@ -8,6 +8,11 @@
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
         >
+
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        crossorigin="anonymous"></script>
+
+        <script src = "../static/writeQ.js"></script>
     </head>
     <body>
         <div class = "content wrap">
@@ -24,7 +29,7 @@
             <h1>게시글 작성</h1>
             <div class = "field">
                 <label class="label">제목</label>
-                <input class="input" type = "text" placeholder="재워줘">
+                <input class="input" type = "text" placeholder="재워줘" id = "titleArea">
             </div>
             <div class="field">
                 <label class="label">질문 내용</label>
@@ -32,10 +37,11 @@
                 class="textarea"
                 placeholder="이건 진짜 아닌듯요"
                 rows="10"
+                id = "contentArea"
                 ></textarea>
             </div>
             <div class="field" id="float_right">
-                <button class="button is-success">질문하기</button>
+                <button class="button is-success" onclick="upload_post()">질문하기</button>
             </div>
             
 

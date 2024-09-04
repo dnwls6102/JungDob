@@ -109,6 +109,20 @@
       })
     }
 
+    function open_post(id) {
+        
+        let ajaxUrl = "/post?id=" + id
+
+        $.ajax({
+          type: "GET",
+          url: ajaxUrl,
+          data: {},
+          success: function(response){
+              location.href = ajaxUrl
+          }
+        })
+    }
+
     function openClose() {
       // id 값 post-box의 display 값이 block 이면(= 눈에 보이면)
       if ($("#post-box").css("display") == "block") {
@@ -186,7 +200,7 @@
             </div>
           </div>
 
-          <div class="content_" onclick = "location.href = '/post'" style = "cursor:pointer;">
+          <div class="content_" onclick = "open_post(this.id)" style = "cursor:pointer;" id={{i['id']}}>
             <h1>
               <p>{{i['title']}}</p>
             </h1>

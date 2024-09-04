@@ -82,14 +82,24 @@ def login():
         pw_receive = request.form['user_pw']
 
         result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
-
         if len(result) == 0:
             return jsonify({'result' : 'noMatch'})
         else :
             return jsonify({'result' : 'success'})
-
     return jsonify({'result': 'fail'})
-    
+
+@app.route('/api/signIn', methods = ['POST'])
+def idCheck():
+    if request.method == "POST":
+        print("받아옴")
+        id_receive = request.form['user_id']
+        print(id_receive)
+        result = list(db.user.find({'account_id' : id_receive}))
+        print(result)
+        if len(result) == 0:
+            return jsonify({'result' : 'success'})
+        else :
+            return jsonify({'result' : 'noMatch'})
 
 @app.route('/api/signIn', methods=['GET', 'POST'])
 def signIn2():

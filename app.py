@@ -4,7 +4,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-client = MongoClient('localhost', 27017)
+client = MongoClient('13.125.162.42', 27017)
 db = client.jungdob
 
 @app.route('/')
@@ -66,16 +66,15 @@ def signIn():
 def signUp():
     print("signUp")
     user = request.get_json()
-    print("asdf")
-    image = request.file['image']
+    #image = request.file['image']
     user["id"] = getNextSequence("user")
-    extension = image.filename.split('.')[1]
-    user['image'] = user['id'] + '.' + extension
+    #extension = image.filename.split('.')[1]
+    #user['image'] = user['id'] + '.' + extension
     db.user.insert_one(user)
-    image.save('./static/user_iamge/' + user['image'])
+    #image.save('./static/user_iamge/' + user['image'])
     return jsonify({'result': 'success'})
 
-@app.route('/api/checkIDUsed', methods=['GET'])
+@app.route('/api/checkIDUsed', methods=['POST'])
 def checkIDUsed():
     temp_id = request.form['account_id']
     temp_cursor = db.user.find_one({'account_id':temp_id})

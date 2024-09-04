@@ -225,9 +225,9 @@ def createPost():
     post['comment_id_list'] = []
     post['time'] = datetime.now().strftime("%Y %m %d %H %M %S %f")
     print(post)
-    tempnum = db.post.count()
+    tempnum = len(list(db.post.find()))
     db.post.insert_one(post)
-    if tempnum != db.post.count() :
+    if tempnum != len(list(db.post.find())) :
          return jsonify({'result': 'success'})
     else :
         return jsonify({'result' : 'fali'})
@@ -301,10 +301,8 @@ def deleteComment():
     
 @app.route('/api/pressPostLike', methods=['POST']) #
 @jwt_required()
-@jwt_required()
 def pressPostLike():
     post_id = request.get_json()['post_id']
-    account_id = get_jwt_identity()
     account_id = get_jwt_identity()
     post = db.post.find_one({"id":post_id})
     user_id = db.user.find_one({"account_id":account_id})["id"]

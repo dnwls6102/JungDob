@@ -80,22 +80,27 @@ def getUserimage():
     picture = open('./static/user_picture/' + user['id'] + '.jpg')
     return jsonify({'result': 'success', 'file': picture})
 
-#@app.route('/api/login', methods = ['POST'])
-#def login():
-#    if request.method == "POST":
-#        print("받아옴")
-#        id_receive = request.form['user_id']
-#        pw_receive = request.form['user_pw']
-#
-#        result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
-#
-#        if len(result) == 0:
-#            return jsonify({'result' : 'noMatch'})
-#        else :
-#            return jsonify({'result' : 'success'})
-#
-#    return jsonify({'result': 'fail'})
-    
+   
+
+    result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
+    if len(result) == 0:
+        return jsonify({'result' : 'noMatch'})
+    else :
+        return jsonify({'result' : 'success'})
+    return jsonify({'result': 'fail'})
+
+@app.route('/api/signIn', methods = ['POST'])
+def idCheck():
+    if request.method == "POST":
+        print("받아옴")
+        id_receive = request.form['user_id']
+        print(id_receive)
+        result = list(db.user.find({'account_id' : id_receive}))
+        print(result)
+        if len(result) == 0:
+            return jsonify({'result' : 'success'})
+        else :
+            return jsonify({'result' : 'noMatch'})
 
 @app.route('/api/signIn', methods=['POST'])
 def signIn2():
@@ -118,13 +123,33 @@ def signOut():
 @app.route('/api/signUp', methods=['POST']) #
 def signUp():
     print("signUp")
-    user = request.get_json()
-    #image = request.file['image']
+    
+    account_id= request.form['account_id']
+    account_pw = request.form['account_pw']
+    user_name=request.form['user_name']
+    account_class= request.form['jungle_class']
+    slack_id= request.form['slack_id']
+    user_mbti= request.form['user_MBTI']
+    picture=request.form['picture']
+    
+    user ={
+        'account_id': account_id, 'account_pw' : account_pw,
+        'user_name':user_name,'MBTI':user_mbti,
+        'jungle_class':account_class,
+        'slack_id':slack_id,
+        'picture':picture
+    }
     user["id"] = getNextSequence("user")
+    db.user.insert_one(user)
+
+    # user = request.get_json()
+    #image = request.file['image']
+
     #extension = image.filename.split('.')[1]
     #user['image'] = user['id'] + '.' + extension
     print(user)
-    db.user.insert_one(user)
+    
+
     #image.save('./static/user_iamge/' + user['image'])
     return jsonify({'result': 'success'})
 
@@ -147,7 +172,8 @@ def getPostList():
     print("눌림")
     week = request.form.get(['week'])
     print(week)
-    sorting_method = request.get_json()['sorting_method']
+    #week이 99일 경우 전체 목록 불러오기
+    sorting_method = request.form['sorting_method']
     if sorting_method == "time":
         #ret = list(db.post.find({"week": week}))
         ret = sorted(list(db.post.find({"week": week})), key=itemgetter('time'), reverse=True)
@@ -275,8 +301,10 @@ def deleteComment():
     
 @app.route('/api/pressPostLike', methods=['POST']) #
 @jwt_required()
+@jwt_required()
 def pressPostLike():
     post_id = request.get_json()['post_id']
+    account_id = get_jwt_identity()
     account_id = get_jwt_identity()
     post = db.post.find_one({"id":post_id})
     user_id = db.user.find_one({"account_id":account_id})["id"]

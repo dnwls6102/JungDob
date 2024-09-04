@@ -50,46 +50,54 @@
             console.log(account_id)
             let account_pw = $('#inputPW').val()
             console.log(account_pw)
-            let account_pwChack = $('#inputPWCheck').val()
-            console.log(account_pwChack)
-            let jungle_class = $('#jungle_class option:select').val()
+            let user_name = $('#inputName').val()
+            console.log(user_name)
+            let account_pwCheck = $('#inputPwCheck').val()
+            console.log(account_pwCheck)
+            let jungle_class = $('#jungle_class').find(":selected").val();
+            // $("#jungle_class :selected").change(function(){
+            // console.log($(this).val()); //value값 가져오기
+            // });
+
             console.log(jungle_class)
             let slack_id = $('#slack_id').val()
             console.log(slack_id)
             let jungle_MBTI = $('#mbti').val()
             console.log(jungle_MBTI)
-            let picture = $('picture').val()
+            let picture = $('#picture').val()
             console.log(picture)
 
-            if (account_id.val() == "") {
+            if (account_id == "") {
                 alert("아이디를 입력해주세요.")
                 return false;
-            } if (account_pw.val() == "") {
+            }if (user_name == "") {
+                alert("이름을 입력해주세요.")
+                return false;
+             } if (account_pw == "") {
                 alert("패스워드를 입력해주세요.")
                 return false;
-            } if (account_pwChack != account_pw) {
+            } if (account_pwCheck != account_pw) {
                 alert("패스워드가 다릅니다.")
                 return false;
-            } if (account_pw.val() == "") {
-                alert("패스워드를 입력해주세요.")
-                return false;
-            } if (jungle_class.val() == "") {
+            } if (jungle_class == "") {
                 alert("정글 기수를 체크해주세요")
                 return false;
-            } if (slack_id.val() == "") {
+            } if (slack_id == "") {
                 alert("slack ID를 입력해주세요.")
                 return false;
             }
+
             $.ajax({
                 type: "POST",
-                url: "/api/signIN",
-                data: { user_id: account_id , user_pw: account_pw, user_class: jungle_class, user_slack: slack_id, user_mbti:jungle_MBTI, user_picture:picture },
+                url: "/api/signUp",
+                data: { account_id: account_id , account_pw: account_pw, user_name:user_name, jungle_class: jungle_class, slack_id: slack_id, user_MBTI:jungle_MBTI, picture:picture },
                 success: function (response) { // 성공하면
                     if (response['result'] == 'success') {
-                        location.href = './main'
+                        // location.href = './main'
+                        alert('잘나왔네')
                     }
                     else if (response['result'] == 'noMatch') {
-        
+                    alert('아무것도 없었다')
                     }
 
                 }
@@ -133,16 +141,16 @@
         <div class="field">
             <span class="has-text-danger">* </span><strong>정글 기수</strong>
             <div class="control">
-                <div class="select" id="">
-                    <select>
+                <div class="select">
+                    <select id="jungle_class">
                         <option disabled hidden selected></option>
-                        <option>7기</option>
-                        <option>6기</option>
-                        <option>5기</option>
-                        <option>4기</option>
-                        <option>3기</option>
-                        <option>2기</option>
-                        <option>1기</option>
+                        <option value="7">7기</option>
+                        <option value="6">6기</option>
+                        <option value="5">5기</option>
+                        <option value="4">4기</option>
+                        <option value="3">3기</option>
+                        <option value="2">2기</option>
+                        <option value="1">1기</option>
                     </select>
                 </div>
             </div>
@@ -150,12 +158,12 @@
 
         <div class="field">
             <span class="account_form has-text-danger">* </span><strong>Slack ID</strong>
-            <input class="input" type="text" placeholder="필요가 있나?" />
+            <input class="input" type="text" placeholder="필요가 있나?" id="slack_id"/>
         </div>
 
         <div class="field">
             <label class="label">MBTI(추후 이벤트 참여에 도움이 됩니다)</label>
-            <input class="input" type="text" placeholder="ENFP" />
+            <input class="input" type="text" placeholder="ENFP" id="mbti" />
         </div>
         <div class="field">
             <label class="label">프로필 사진</label>
@@ -163,7 +171,7 @@
                 <div class="addImage" id="image-show"></div>
                 <div class="file is-success">
                     <label class="file-label">
-                        <input class="file-input" type="file" name="resume" onchange="loadFile(this)" />
+                        <input id="picture"class="file-input" type="file" name="resume" onchange="loadFile(this)" />
                         <span class="file-cta">
                             <span class="file-label">사진 업로드</span>
                         </span>

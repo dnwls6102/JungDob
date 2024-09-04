@@ -345,17 +345,20 @@ def deletePost():
 
 @app.route('/api/createComment', methods=['POST']) #
 def createComment():
+    temp = dict()
     comment = request.get_json()
-    post_id = comment['post_id']
-    comment.pop('post_id')
-    comment["id"] = getNextSequence("comment")
-    comment['like_user_id_list'] = []
-    comment['hate_user_id_list'] = []
-    comment['time'] = datetime.now().strftime("%Y %m %d %H %M %S %f")
-    db.comment.insert_one(comment)
+    temp['content'] = request.form['content']
+    post_id = int(request.form['post_id'])
+    temp['post_id']= post_id
+    #comment.pop('post_id')
+    temp["id"] = getNextSequence("comment")
+    temp['like_user_id_list'] = []
+    temp['hate_user_id_list'] = []
+    temp['time'] = datetime.now().strftime("%Y %m %d %H %M %S %f")
+    db.comment.insert_one(temp)
 
     post = db.post.find_one({"id":post_id})
-    post['comment_id_list'].append(comment["id"])
+    post['comment_id_list'].append(temp["id"])
     db.post.delete_one({"id":post_id})
     db.post.insert_one(post)
     return jsonify({'result': 'success'})

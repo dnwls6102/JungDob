@@ -102,7 +102,7 @@
         </div>
     </div>
 
-    <div class="content_" onclick = "location.href = '/post'" style = "cursor:pointer;">
+    <div class="content_" onclick = "open_post(this.id)" style = "cursor:pointer;" id = %s>
         <h1>
             <p>%s</p>
         </h1>
@@ -164,12 +164,12 @@
       let post_string = "";
       postList.forEach(function(post) {
         let user = get_user_info(post["author_id"]);
-        let name = user["account_id"] + "(" + user["user_name"] + ")";
+        let name = user["user_name"] + "(" + user["slack_id"] + ")";
         let temp = post["time"].split(" ");
         let time = "%s년 %s월 %s일 %s시 %s분"
         let comment_num = post["comment_id_list"].length
         time = time.replace("%s", temp[0]).replace("%s", temp[1]).replace("%s", temp[2]).replace("%s", temp[3]).replace("%s", temp[4]);
-        post_string += post_card.replace("%s", name).replace("%s", time).replace("%s", post["title"]).replace("%d", comment_num).replace("%d", post["like_num"]);
+        post_string += post_card.replace("%s", name).replace("%s", time).replace("%s", post["id"]).replace("%s", post["title"]).replace("%d", comment_num).replace("%d", post["like_num"]);
       });
       $(".card-rapper").html(post_string);
     }
@@ -307,7 +307,7 @@
             <div class="media-content">
               {%for x in users if not (i['author_id'] != x['id'])%}
               <p class="title is-4"><a>
-                {{x['user_name']}}
+                {{x['user_name']}} ({{x['slack_id']}})
               </a></p>
               {%endfor%}
               <time datetime="2016-1-1">{{i['time']}}</time>

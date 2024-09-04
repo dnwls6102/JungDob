@@ -6,10 +6,21 @@
   <title>정답 : 정글의 답을 찾다</title>
   <link rel="stylesheet" type="text/css" href="../static/style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous">
+
+  </script>
+
   <script>
-    function createComment() {
+    function comment() {
+      console.log(1);
+
+    }
+  </script>
+  <script>
+    function creat_comment() {
       let comment = $('#comment').val()
+      console.log(comment)
+      console.log(1)
       console.log(comment)
       $.ajax({
         type: "POST",
@@ -28,6 +39,28 @@
           )
         }
       })
+    }
+    function createComment() {
+      let comment = $('#comment').val()
+      console.log(1)
+      // console.log(comment)
+      // $.ajax({
+      //   type: "POST",
+      //   url: "/api/createComment",
+      //   data: { post_id: comment },
+      //   success: function (response) { // 성공하면
+      //     if (response['result'] == 'success') {
+      //       alert("댓글이 등록되었습니다.")
+      //     }
+      //     else if (response['result'] == 'noMatch') {
+      //       alert("댓글을 입력해주세요.")
+      //       $('#inputID').val("")
+      //     }
+      //     else (
+      //       alert("서버 오류")
+      //     )
+      //   }
+      // })
     }
 
   </script>
@@ -92,12 +125,12 @@
       <!-- 댓글 단 사람들 숫자 받아오기 : db에서 숫자 꺼내와서 변수로 대입 -->
       <h2>{{reply_num}}개의 답변</h2>
       <div class="control">
-        <textarea class="textarea has-fixed-size" id="comment" placeholder="내가 죽일놈이지 뭐"></textarea>
+        <textarea class="textarea has-fixed-size" id="comment" placeholder="정글러 여러분의 답변을 기다립니다."></textarea>
       </div>
     </div>
 
     <div id="float_right">
-      <button class="button is-success" onclick="createComment()">답변하기</button>
+      <button class="button is-success" onclick="creat_comment()">답변하기</button>
     </div>
 
     {% for i in reply_db %}

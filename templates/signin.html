@@ -24,10 +24,10 @@
                 data: {user_id : account_id},
                 success: function (response) { // 성공하면
                 if (response['result'] == 'success') {
-                    location.href = './main'
+                    alert("사용하셔도 좋습니다.")
                 }
                 else if (response['result'] == 'noMatch') {
-                    alert("아이디 혹은 비밀번호를 다시 확인하세요.")
+                    alert("중복되는 아이디 입니다.")
                 }
                 else(
                     alert("서버 오류")
@@ -35,6 +35,24 @@
                 }
             })
             }
+
+            function signIn(){
+            let account_id= $('#inputID').val()
+            console.log(account_id)
+            let account_pw= $('#inputPW').val()
+            console.log(account_pw)
+            let account_pwChack= $('#inputPWCheck').val()
+            console.log(account_pwChack)
+            let jungle_class = $('#jungle_class').val()
+            console.log(jungle_class)
+            let slack_id = $('#slack_id').val()
+            console.log(slack_id)
+            let jungle_MBTI= $('#mbti').val()
+            console.log(jungle_MBTI)
+            let picture= $('picture').val()
+            console.log(picture)
+            }
+            
           </script>
     </head>
     <body>

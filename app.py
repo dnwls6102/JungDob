@@ -1,5 +1,6 @@
 from pymongo import MongoClient, ReturnDocument
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect, url_for, session
+from flask_login import LoginManager, logout_user, login_user, UserMixin, current_user
 from datetime import datetime
 from operator import itemgetter
 import re
@@ -9,6 +10,20 @@ app = Flask(__name__)
 client = MongoClient('mongodb://root:root@13.125.162.42', 27017)
 #client = MongoClient('localhost', 27017)
 db = client.jungdob
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+class User(UserMixin):
+    def __init__(self, account_id, account_pw, id):
+        self.id = id
+        self.account_id = account_id
+        self.account_pw = account_pw
+
+#@login_manager.user_loader
+#def load_user(user_id):
+#    return user_repo.get(user_id)
+
 
 @app.route('/')
 def index():
@@ -76,12 +91,24 @@ def login():
     return jsonify({'result': 'fail'})
     
 
-@app.route('/api/signIn', methods=['GET'])
-def signIn():
-    if request.method == "POST":
-        print("들어왔음")    
+@app.route('/api/signIn', methods=['POST'])
+def signIn2():
+    account_id = request.get_json()['account_id']
+    account_pw = request.get_json()['account_pw']
+    account = db.user.find_one({'account_id':account_id})
+    print(account, account_pw)
+    if account != None and account['account_pw'] == account_pw:
+        user = User(account_id, account_pw, account['id'])
+        login_user(user)
+        print(current_user())
+        return redirect(url_for("/main"))
+    else:
+        return jsonify({'result': 'fales'})
 
-    return jsonify({'result': 'success'})
+@app.route('/api/signOut', methods=['GET'])
+def signOut():
+    logout_user()
+    return redirect(url_for('/'))
 
 @app.route('/api/signUp', methods=['POST']) #
 def signUp():

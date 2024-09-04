@@ -145,7 +145,7 @@ def checkIDUsed():
 
 @app.route('/api/getPostList', methods=['POST']) #
 def getPostList():
-    week = request.get_json()['week']
+    week = request.form['week']
     print(week)
     sorting_method = request.get_json()['sorting_method']
     if sorting_method == "time":

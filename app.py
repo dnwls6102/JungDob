@@ -143,7 +143,6 @@ def checkIDUsed():
     return jsonify({'result': 'success', 'isUsed': ret})
     #return "success"
 
-
 @app.route('/api/getPostList', methods=['POST']) #
 def getPostList():
     week = request.get_json()['week']

@@ -56,7 +56,8 @@ def post():
         for x in list(db.comment.find({})):
             like_num = 0
             hate_num = 0
-            if x['id'] == i :
+            print(x)
+            if x['author_id'] == i :
                 for t in x['like_user_id_list']:
                     like_num += 1
                 for h in x['hate_user_id_list']:
@@ -250,6 +251,8 @@ def select():
     reply_id = request.form['reply_id']
     print(reply_id)
     print(type(reply_id))
+    filter = {'id' : int(id)}
+    newvalues = {"$set": {"solved_comment_id"}}
     temp_num = len(list(db.post.find({})))
     db.post.update_one({'id' : int(id)}, {"$set" : {"solved_comment_id" : int(reply_id)}})
     if temp_num != len(list(db.post.find({}))):

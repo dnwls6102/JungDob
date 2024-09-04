@@ -11,25 +11,22 @@
   <script src="../static/post.js"></script>
 
   <script>
-    function comment() {
-      let comment = $('#comment').val()
-      console.log(comment)
+    function comment(post_id){
+      let comment= $('#comment').val();
+      alert(comment)
       $.ajax({
-          type: "POST",
-          url: "/api/createComment",
-          data: { title: title, content: content, week: week },
-          success: function (response) {
-            if (response["result"] == "success") {
-              alert("업로드 완료");
-              location.replace("/main");
-            } else if (response["result"] == "noTitle") {
-              alert("제목을 입력하세요!");
-            } else if (response["result"] == "noContent") {
-              alert("내용을 입력하세요!");
-            } else alert("서버 오류");
-          },
-        });
-
+      type: "POST",
+      url: "/api/createComment",
+      data: {content : comment, post_id : post_id},
+      success: function(response) {
+        if(response["result"] == "success") {
+          ret = response["user"];
+        }
+        else {
+          alert("error")
+        }
+      }
+    })
     }
   </script>
 
@@ -94,15 +91,17 @@
 
     <div class="answer_area">
       <!-- 댓글 단 사람들 숫자 받아오기 : db에서 숫자 꺼내와서 변수로 대입 -->
-      <h2>{{reply_num}}개의 답변</h2>
+      <h2>{{reply_num}}개의 댓글</h2>
       <div class="control">
-        <textarea class="textarea has-fixed-size" id="comment" placeholder="정글러 여러분의 답변을 기다립니다."></textarea>
+        <textarea
+          class="textarea has-fixed-size"
+          placeholder="정글러님들의 답변을 기다립니다."
+          id ="comment"
+        ></textarea>
       </div>
     </div>
-
     <div id="float_right">
-      <!-- <button class="button is-success" onclick="creat_comment()">답변하기</button> -->
-      <button class="button is-success" onclick="comment()">답변하기</button>
+      <button class="button is-success" onclick="comment({{post['id']}})">답변하기</button>
     </div>
 
     {% for i in reply_db %}

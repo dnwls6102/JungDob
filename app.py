@@ -194,9 +194,9 @@ def createPost():
     post['comment_id_list'] = []
     post['time'] = datetime.now().strftime("%Y %m %d %H %M %S %f")
     print(post)
-    tempnum = db.post.count()
+    tempnum = len(list(db.post.find()))
     db.post.insert_one(post)
-    if tempnum != db.post.count() :
+    if tempnum != len(list(db.post.find())) :
          return jsonify({'result': 'success'})
     else :
         return jsonify({'result' : 'fali'})

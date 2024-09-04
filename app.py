@@ -15,10 +15,10 @@ db = client.jungdob
 jwt = JWTManager(app)
 
 @app.route('/')
-@jwt_required()
+@jwt_required(optional=True)
 def index():
     cur_user = get_jwt_identity()
-    if cur_user is None:
+    if not cur_user:
         return render_template("main.html")
     else:
         return render_template("index.html")
@@ -37,7 +37,20 @@ def post():
 
 @app.route('/main')
 def main():
-    return render_template("main.html")
+    ret = sorted(list(db.post.find({})), key=itemgetter('time'), reverse=True)
+    users = list(db.user.find({}))
+    print(users)
+    for _post in ret:
+        _post.pop('_id')
+    for x in ret:
+        temp_reply_num = 0
+        print(x)
+        for z in x['comment_id_list'] :
+            temp_reply_num += 1
+        x['reply_num'] = temp_reply_num
+    print(ret)
+    print(users)
+    return render_template("main.html", posts = ret, users = users, name = 'Null')
 
 
 # API
@@ -68,18 +81,13 @@ def getUserimage():
     picture = open('./static/user_picture/' + user['id'] + '.jpg')
     return jsonify({'result': 'success', 'file': picture})
 
-@app.route('/api/login', methods = ['POST'])
-def login():
-    if request.method == "POST":
-        print("받아옴")
-        id_receive = request.form['user_id']
-        pw_receive = request.form['user_pw']
+   
 
-        result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
-        if len(result) == 0:
-            return jsonify({'result' : 'noMatch'})
-        else :
-            return jsonify({'result' : 'success'})
+    result = list(db.user.find({'account_id' : id_receive , 'account_pw' : pw_receive}))
+    if len(result) == 0:
+        return jsonify({'result' : 'noMatch'})
+    else :
+        return jsonify({'result' : 'success'})
     return jsonify({'result': 'fail'})
 
 @app.route('/api/signIn', methods = ['POST'])
@@ -162,7 +170,8 @@ def checkIDUsed():
 
 @app.route('/api/getPostList', methods=['POST']) #
 def getPostList():
-    week = request.form['week']
+    print("눌림")
+    week = request.form.get(['week'])
     print(week)
     #week이 99일 경우 전체 목록 불러오기
     sorting_method = request.form['sorting_method']
@@ -293,8 +302,10 @@ def deleteComment():
     
 @app.route('/api/pressPostLike', methods=['POST']) #
 @jwt_required()
+@jwt_required()
 def pressPostLike():
     post_id = request.get_json()['post_id']
+    account_id = get_jwt_identity()
     account_id = get_jwt_identity()
     post = db.post.find_one({"id":post_id})
     user_id = db.user.find_one({"account_id":account_id})["id"]

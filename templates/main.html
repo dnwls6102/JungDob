@@ -81,9 +81,11 @@
     }
   </style>
   <script>
-    let week = 99;
+    let week = 0;
+    let sorting_method = "like"
     function get_post_list() {
-      let sorting_method = $('#sorting option:selected').val();
+      week = $('#week_input').val();
+      sorting_method = $('#sorting option:selected').val();
       if (sorting_method == '추천순') {
         sorting_method = 'like'
       }
@@ -94,10 +96,11 @@
       $.ajax({
         type: "POST",
         url: "/api/getPostList",
-        data: {week : week, sorting_method : sorting_method},
+        data: { week : week, sorting_method : sorting_method },
         success: function(response) {
           if(response["result"] == "success") {
-            
+            let posts = response['post']
+            console.log(posts)
           }
           else {
             alert("서버 오류로 글 목록을 불러오지 못했습니다")
@@ -105,10 +108,7 @@
         }
       })
     }
-    function kensaku() {
-      week = $('#week_input').val();
-      get_post_list();
-    }
+
     function openClose() {
       // id 값 post-box의 display 값이 block 이면(= 눈에 보이면)
       if ($("#post-box").css("display") == "block") {
@@ -142,7 +142,7 @@
       <div>
         <input type='text' placeholder='주차를 입력하세요' class='bottom-border' id = "week_input" />
         <p class="week_searching">주차 프로젝트</p>
-        <a onclick="" class="button is-success login_button">
+        <a class="button is-success login_button" onclick= "get_post_list()">
           검색
         </a>
         <div class="field week_searching filter">
@@ -162,6 +162,7 @@
       <a class="sub_nav answer_stay" href=""> 답변 진행중 /</a>
       <a class="sub_nav answer_success" href=""> 완료된 답변</a>
       
+      {% for i in posts %}
       <div class="card">
        
         <div class="card-content">
@@ -176,23 +177,27 @@
               </figure>
             </div>
             <div class="media-content">
-              <p class="title is-4"><a>다니엘 </a></p>
-              <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+              {%for x in users if not (i['author_id'] != x['id'])%}
+              <p class="title is-4"><a>
+                {{x['user_name']}}
+              </a></p>
+              {%endfor%}
+              <time datetime="2016-1-1">{{i['time']}}</time>
             </div>
           </div>
 
           <div class="content_" onclick = "location.href = '/post'" style = "cursor:pointer;">
             <h1>
-              <p>c언어 포인터</p>
+              <p>{{i['title']}}</p>
             </h1>
 
           </div>
           <div class="footer_btn">
-            <a onclick="" class="button is-link is-light login_button"">
-              댓글 &nbsp; <p>1</p>
+            <a onclick="" class="button is-link is-light login_button">
+              댓글 &nbsp; <p>{{i['reply_num']}}</p>
               </a>
-              <a onclick="" class=" button is-success login_button"">
-              나도 궁금해요 &nbsp; <p>1</p>
+              <a onclick="" class=" button is-success login_button">
+              나도 궁금해요 &nbsp; <p>{{i['like_num']}}</p>
             </a>
 
           </div>
@@ -200,6 +205,7 @@
         </div>
         
       </div>
+      {%endfor%}
       
     </div>
     <a href = "./writeQ" class="is-success create_answer">

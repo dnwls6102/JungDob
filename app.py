@@ -27,6 +27,7 @@ def post():
 def main():
     return render_template("main.html")
 
+
 # API
 def getNextSequence(collection):
     temp = db.counter.find_one_and_update({'_id':collection}, 
@@ -48,16 +49,30 @@ def getUserInfo():
     })
     return jsonify({'result': 'success'}, user)
 
+@app.route('/api/getUserimage', methods=['GET'])
+def getUserimage():
+    user_id = request.form['user_id']
+    user = db.user.find_one({"id":user_id})
+    picture = open('./static/user_picture/' + user['id'] + '.jpg')
+    return jsonify({'result': 'success', 'file': picture})
+
 
 @app.route('/api/signIn', methods=['GET'])
 def signIn():
+    print("hello world")
     return jsonify({'result': 'success'})
 
 @app.route('/api/signUp', methods=['POST'])
 def signUp():
+    print("signUp")
     user = request.get_json()
+    print("asdf")
+    image = request.file['image']
     user["id"] = getNextSequence("user")
+    extension = image.filename.split('.')[1]
+    user['image'] = user['id'] + '.' + extension
     db.user.insert_one(user)
+    image.save('./static/user_iamge/' + user['image'])
     return jsonify({'result': 'success'})
 
 @app.route('/api/checkIDUsed', methods=['GET'])
@@ -69,7 +84,7 @@ def checkIDUsed():
         ret = True
     elif is_id_used == 0:
         ret = False
-    return jsonify({'result': 'success'}, {'isUsed': ret})
+    return jsonify({'result': 'success', 'isUsed': ret})
 
 @app.route('/api/getPostList', methods=['GET'])
 def getPostList():
@@ -100,7 +115,7 @@ def createPost():
 def getCurrentPost():
     post_id = request.form['post_id']
     post = db.post.find_one({"id":post_id})
-    return jsonify({'result': 'success'}, post)
+    return jsonify({'result': 'success', "post": post})
 
 @app.route('/api/getCommentList', methods=['GET'])
 def getCommentList():
@@ -110,7 +125,7 @@ def getCommentList():
     comment_list = []
     for id in comment_id_list:
         comment_list.append(db.post.find_one({'id':id}))
-    return jsonify({'result': 'success'}, {'comments':comment_list})
+    return jsonify({'result': 'success', 'comments':comment_list})
 
 @app.route('/api/deletePost', methods=['DELETE'])
 def deletePost():

@@ -120,32 +120,34 @@ def getUserimage():
 #        return jsonify({'result' : 'success'})
 #    return jsonify({'result': 'fail'})
 
-#@app.route('/api/signIn', methods = ['POST'])
-#def idCheck():
-#    if request.method == "POST":
-#        print("받아옴")
-#        id_receive = request.form['user_id']
-#        print(id_receive)
-#        result = list(db.user.find({'account_id' : id_receive}))
-#        print(result)
-#        if len(result) == 0:
-#            return jsonify({'result' : 'success'})
-#        else :
-#            return jsonify({'result' : 'noMatch'})
+@app.route('/api/signIn', methods = ['POST'])
+def idCheck():
+   if request.method == "POST":
+       print("받아옴")
+       id_receive = request.form['user_id']
+       print(id_receive)
+       result = list(db.user.find({'account_id' : id_receive}))
+       print(result)
+       if len(result) == 0:
+           return jsonify({'result' : 'success'})
+       else :
+           return jsonify({'result' : 'noMatch'})
 
-@app.route('/api/signIn', methods=['POST'])
-def signIn2():
-    temp = request.get_json()
-    print(temp)
-    account_id = request.form['user_id']
-    account_pw = request.form['account_pw']
-    account = db.user.find_one({'account_id':account_id})
-    user_id = account["id"]
-    if account != None and account['account_pw'] == account_pw:
-        access_token = create_access_token(identity = user_id)
-        return jsonify({'result': 'success', "access_token":access_token})
-    else:
-        return jsonify({'result': 'fail'})
+
+#아이디 중복 체크를 signIn2()로 하면 415 오류 발생. jwt 인증이 꼭 필요한지?
+# @app.route('/api/signIn', methods=['POST'])
+# def signIn2():
+#     temp = request.get_json()
+#     print(temp)
+#     account_id = request.form['user_id']
+#     account_pw = request.form['account_pw']
+#     account = db.user.find_one({'account_id':account_id})
+#     user_id = account["id"]
+#     if account != None and account['account_pw'] == account_pw:
+#         access_token = create_access_token(identity = user_id)
+#         return jsonify({'result': 'success', "access_token":access_token})
+#     else:
+#         return jsonify({'result': 'fail'})
 
 @app.route('/api/signOut', methods=['GET'])
 def signOut():

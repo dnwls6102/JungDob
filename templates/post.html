@@ -145,7 +145,7 @@
         let post_id = localStorage.getItem("currentPostId");
         $.ajax({
           type: "POST",
-          url: "/api/selesolveProblemct",
+          url: "/api/solveProblem",
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
           },

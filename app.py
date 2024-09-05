@@ -350,7 +350,7 @@ def getCommentList():
 def solveProblem():
     post_id = int(request.form['post_id'])
     comment_id = request.form['comment_id']
-    post = db.post.find({"id":post_id})
+    post = db.post.find_one({"id":post_id})
     post["solved_comment_id"] = comment_id
     db.post.delete_one({"id":post_id})
     db.post.insert_one(post)

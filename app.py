@@ -44,8 +44,8 @@ def writeQ():
 
 @app.route('/post', methods=['GET'])
 def post():
+    #id_receive = 작성자의 ID
     id_receive = request.args.get('id')
-    print(id_receive)
     post = list(db.post.find({'id' : int(id_receive)}))
     post = post[0]
     isSolved = post["solved_comment_id"]
@@ -58,11 +58,11 @@ def post():
     userdb = list(db.user.find({}))
     reply_db = []
     reply_users_db = []
+    #comment_id_list : 댓글의 id 리스트
     for i in post['comment_id_list']:
         for x in list(db.comment.find({})):
             like_num = 0
             hate_num = 0
-            # print(x)
             if x['id'] == i :
                 for t in x['like_user_id_list']:
                     like_num += 1
@@ -71,9 +71,14 @@ def post():
                 x['like_num'] = like_num
                 x['hate_num'] = hate_num
                 reply_db.append(x)
+
+    for x in reply_db:
         for u in userdb :
-            if u['id'] == i :
+            #유저 id는 댓글의 author_id와 같아야 함
+            if u['id'] == x['author_id'] :
                 reply_users_db.append(u)
+    print(reply_db)
+    print(reply_users_db)
     temp_reply_num = 0
     # print(reply_users_db)
     for i in post['comment_id_list']:

@@ -137,9 +137,6 @@ def idCheck():
 #api 주소를 같은 곳으로 하지 말 것
 @app.route('/api/signIn2', methods=['POST'])
 def signIn2():
-    print("눌림")
-    temp = request.get_json()
-    print(temp)
     account_id = request.form['account_id']
     account_pw = request.form['account_pw']
     account = db.user.find_one({'account_id':account_id})

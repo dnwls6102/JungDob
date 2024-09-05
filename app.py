@@ -135,7 +135,9 @@ def getUserimage():
 
 @app.route('/api/signIn', methods=['POST'])
 def signIn2():
-    account_id = request.form['account_id']
+    temp = request.get_json()
+    print(temp)
+    account_id = request.form['user_id']
     account_pw = request.form['account_pw']
     account = db.user.find_one({'account_id':account_id})
     user_id = account["id"]

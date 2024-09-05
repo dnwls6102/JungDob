@@ -48,6 +48,11 @@ def post():
     print(id_receive)
     post = list(db.post.find({'id' : int(id_receive)}))
     post = post[0]
+    isSolved = post["solved_comment_id"]
+#    if post["solved_comment_id"] == -1:
+#        isSolved = False
+#    else:
+#        isSolved = True
     authorInfo = list(db.user.find({'id' : post['author_id']}))[0]
     current_user = authorInfo["id"]
     userdb = list(db.user.find({}))
@@ -75,7 +80,8 @@ def post():
         temp_reply_num += 1
     
     return render_template("post.html", post = post, authorInfo = authorInfo, reply_num = temp_reply_num,
-                           reply_db = reply_db, reply_users_db = reply_users_db, current_user_id = current_user)
+                           reply_db = reply_db, reply_users_db = reply_users_db, current_user_id = current_user,
+                           isSolved = isSolved)
 
 @app.route('/main')
 def main():

@@ -83,10 +83,40 @@
         })
       }
       $(document).ready(function () {
-        $(".selectButtonRapper button").each(function(index, element) {
+        let solve_comment = {{isSolved|safe}};
+        if("{{isSolved|safe}}" != "-1"){
+          $("#isSolved_button").html("해결");
+          $("#isSolved_button").attr('class', 'button is-success is-active');
+          $(".selectButtonRapper button").each(function(index, element) {
+            let comment_id = element.id;
+            let current_user_id = {{current_user_id}};
+            $.ajax({
+              type: "POST",
+              url: "/api/getComment",
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+              },
+              data: {
+                "comment_id":comment_id
+              },
+              async:false,
+              success: function(response) {
+                if(response["result"] == "success") {
+                  let current_comment_id = response["comment"]["id"]
+                  if(solve_comment == current_comment_id)
+                    element.parentNode.parentNode.parentNode.style.border='1px solid green';
+                }
+                else {
+                  alert("error")
+                }
+              }
+            })
+          })
+        }
+        else {
+          $(".selectButtonRapper button").each(function(index, element) {
           let comment_id = element.id;
           let current_user_id = {{current_user_id}};
-          let post_author_id;
           $.ajax({
             type: "POST",
             url: "/api/getComment",
@@ -100,8 +130,8 @@
             success: function(response) {
               if(response["result"] == "success") {
                 let comment_author_id = response["comment"]["author_id"]
-                if(current_user_id != comment_author_id)
-                  element.style.display='none';
+                if(current_user_id == comment_author_id)
+                  element.style.display='block';
               }
               else {
                 alert("error")
@@ -109,7 +139,31 @@
             }
           })
         })
+        }
       })
+      function select_button(id) {
+        let post_id = localStorage.getItem("currentPostId");
+        $.ajax({
+          type: "POST",
+          url: "/api/selesolveProblemct",
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+          },
+          data: {
+            "post_id":post_id,
+            "comment_id":id
+          },
+          async:false,
+          success: function(response) {
+            if(response["result"] == "success") {
+              window.location.reload();
+            }
+            else {
+              alert("error")
+            }
+          }
+        })
+      }
     </script>
 
   </head>
@@ -131,11 +185,7 @@
       <!-- javascript 혹은 jquery로 display속성을 block으로 변경하기 -->
       <!-- 해결 / 미해결 버튼의 id값은 게시글 고유의 id 값으로 설정하기 -->
       <div class="solved">
-        {%if post['solved_comment_id'] == -1 %}
-        <button class="button is-active">미해결</button>
-        {%else%}
-        <button class="button is-success is-active">해결</button>
-        {%endif%}
+        <button class="button is-active" id="isSolved_button">미해결</button>
       </div>
     </div>
 
@@ -185,6 +235,7 @@
       
       {% for i in reply_db %}
       <!-- 댓글 블록 -->
+       <div>
       <div class="user_info" id="Inline_block">
         <!-- 사용자 이미지 -->
         <div class="media">
@@ -223,9 +274,10 @@
           <button onclick="press_hate_button(this.id)" class="button is-link is-light Hbutton{{i['id']}}" id="{{i['id']}}">안돼요 {{i['hate_num']}}</button>
         </p>
         <p class="selectButtonRapper">
-          <button class="button is-warning is-hovered" id = '{{i["id"]}}' onclick = 'select(this.id)'>채택하기</button>
+          <button class="button is-warning is-hovered" id = '{{i["id"]}}' onclick = 'select_button(this.id)' style="display: none;">채택하기</button>
         </p>
       </div>
+    </div>
       {%endfor%}
    
       

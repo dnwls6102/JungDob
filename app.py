@@ -202,7 +202,7 @@ def signUp():
 @app.route('/api/checkIDUsed', methods=['POST']) #
 def checkIDUsed():
     print("checkIDUsed")
-    temp_id = request.get_json()["account_id"]
+    temp_id = request.form["user_id"]
     print(temp_id)
     is_id_used = len(list(db.user.find({'account_id':temp_id})))
     print(is_id_used)
@@ -275,6 +275,7 @@ def select():
         return jsonify({'result' : 'fail'})
 
 @app.route('/api/createPost', methods=['POST']) #
+@jwt_required()
 def createPost():
     print("눌러짐")
     #줄바꿈 문자를 <br>로 바꾸기
@@ -296,8 +297,8 @@ def createPost():
 
     post['title'] = request.form['title']
     post['content'] = request.form['content']
-    #post["author_id"] = get_jwt_identity()
-    post["author_id"] = 2
+    post["author_id"] = get_jwt_identity()
+    #post["author_id"] = 2
     post["id"] = getNextSequence("post")
     post['like_num'] = 0
     post['like_user_id_list'] = []

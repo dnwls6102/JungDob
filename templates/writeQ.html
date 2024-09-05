@@ -30,6 +30,9 @@
           type: "POST",
           url: "/api/createPost",
           data: { title: title, content: content, week: week },
+          headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+          },
           success: function (response) {
             if (response["result"] == "success") {
               alert("업로드 완료");

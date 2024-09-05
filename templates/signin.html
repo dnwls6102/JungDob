@@ -30,7 +30,7 @@
             console.log(account_id)
             $.ajax({
                 type: "POST",
-                url: "/api/signIn",
+                url: "/api/checkIDUsed",
                 data: { headers: {
                 "Content-Type": `application/json`, // application/json 타입 선언
                 },user_id: account_id },

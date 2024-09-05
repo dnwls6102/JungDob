@@ -82,6 +82,34 @@
           }
         })
       }
+      $(document).ready(function () {
+        $(".selectButtonRapper button").each(function(index, element) {
+          let comment_id = element.id;
+          let current_user_id = {{current_user_id}};
+          let post_author_id;
+          $.ajax({
+            type: "POST",
+            url: "/api/getComment",
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+            },
+            data: {
+              "comment_id":comment_id
+            },
+            async:false,
+            success: function(response) {
+              if(response["result"] == "success") {
+                let comment_author_id = response["comment"]["author_id"]
+                if(current_user_id != comment_author_id)
+                  element.style.display='none';
+              }
+              else {
+                alert("error")
+              }
+            }
+          })
+        })
+      })
     </script>
 
   </head>
@@ -147,12 +175,12 @@
         <textarea
           class="textarea has-fixed-size"
           placeholder="정글러님들의 답변을 기다립니다."
-          id ="comment"
+          id="answer_content"
         ></textarea>
       </div>
     </div>
     <div id="float_right">
-      <button class="button is-success" onclick="press_comment()">답변하기</button>
+      <button class="button is-success " onclick="press_comment()">답변하기</button>
     </div>
       
       {% for i in reply_db %}
@@ -194,8 +222,8 @@
         <p class="control">
           <button onclick="press_hate_button(this.id)" class="button is-link is-light Hbutton{{i['id']}}" id="{{i['id']}}">안돼요 {{i['hate_num']}}</button>
         </p>
-        <p class="control">
-          <button class="button is-warning is-hovered" id = '{{post["id"]}}' onclick = 'select(this.id)'>채택하기</button>
+        <p class="selectButtonRapper">
+          <button class="button is-warning is-hovered" id = '{{i["id"]}}' onclick = 'select(this.id)'>채택하기</button>
         </p>
       </div>
       {%endfor%}

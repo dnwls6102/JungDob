@@ -49,6 +49,7 @@ def post():
     post = list(db.post.find({'id' : int(id_receive)}))
     post = post[0]
     authorInfo = list(db.user.find({'id' : post['author_id']}))[0]
+    current_user = authorInfo["id"]
     userdb = list(db.user.find({}))
     reply_db = []
     reply_users_db = []
@@ -56,7 +57,7 @@ def post():
         for x in list(db.comment.find({})):
             like_num = 0
             hate_num = 0
-            print(x)
+            # print(x)
             if x['id'] == i :
                 for t in x['like_user_id_list']:
                     like_num += 1
@@ -69,12 +70,12 @@ def post():
             if u['id'] == i :
                 reply_users_db.append(u)
     temp_reply_num = 0
-    print(reply_users_db)
+    # print(reply_users_db)
     for i in post['comment_id_list']:
         temp_reply_num += 1
     
     return render_template("post.html", post = post, authorInfo = authorInfo, reply_num = temp_reply_num,
-                           reply_db = reply_db, reply_users_db = reply_users_db)
+                           reply_db = reply_db, reply_users_db = reply_users_db, current_user_id = current_user)
 
 @app.route('/main')
 def main():
@@ -302,15 +303,24 @@ def createPost():
 @app.route('/api/getCurrentPost', methods=['POST']) #
 @jwt_required()
 def getCurrentPost():
-    post_id = request.get_json()['post_id']
+    post_id = int(request.form['post_id'])
     post = db.post.find_one({"id":post_id})
     post.pop('_id')
     return jsonify({'result': 'success', "post": post})
 
+# input = {int comment id}
+@app.route('/api/getComment', methods=['POST']) #
+@jwt_required()
+def getComment():
+    comment_id = int(request.form['comment_id'])
+    comment = db.comment.find_one({"id":comment_id})
+    comment.pop("_id")
+    return jsonify({'result': 'success', 'comment':comment})
+
 @app.route('/api/getCommentList', methods=['POST']) #
 @jwt_required()
 def getCommentList():
-    post_id = request.get_json()['post_id']
+    post_id = request.form['post_id']
     post = db.post.find_one({"id":post_id})
     comment_id_list = post['comment_id_list']
     comment_list = []
@@ -350,6 +360,7 @@ def deletePost():
 @jwt_required()
 def createComment():
     comment = request.form.to_dict()
+    print("create comment content")
     print(comment)
     post_id = int(comment['post_id'])
     comment.pop('post_id')

@@ -52,7 +52,7 @@
       console.log(account_pw)
       $.ajax({
         type: "POST",
-        url: "/api/signIn",
+        url: "/api/signIn2",
         data: { account_id : account_id, account_pw : account_pw },
         async:false,
         success: function (response) { // 성공하면

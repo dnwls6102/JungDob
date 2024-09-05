@@ -200,7 +200,7 @@
           <div class="media-content">
             <!-- 아이디 및 이름 받아오기 : DB에서 아이디와 이름 각각 받아와서 변수로 올리기 -->
              <!-- 작성시간 받아오기 : DB에서~ -->
-             {%for x in reply_users_db if not (i['author_id'] != x['id'])%}
+            {%for x in reply_users_db if not (i['author_id'] != x['id'])%}
             <span class="reply-user-name">{{x['user_name']}} ({{x['slack_id']}})</span>
             {%endfor%}
             <span>{{i['time']}}</span>

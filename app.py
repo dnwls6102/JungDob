@@ -70,6 +70,7 @@ def post():
                     hate_num += 1
                 x['like_num'] = like_num
                 x['hate_num'] = hate_num
+                
                 reply_db.append(x)
 
     for x in reply_db:
@@ -77,6 +78,8 @@ def post():
             #유저 id는 댓글의 author_id와 같아야 함
             if u['id'] == x['author_id'] :
                 reply_users_db.append(u)
+                x['user_name'] = u['user_name']
+                x['slack_id'] = u['slack_id']
     print(reply_db)
     print(reply_users_db)
     temp_reply_num = 0
